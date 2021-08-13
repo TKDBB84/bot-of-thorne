@@ -6,7 +6,14 @@
     "npm": "^7"
   },
   "dependencies": {
-    "discord.js": "^13.1.0"
+    "@discordjs/builders": "^0.5.0",
+    "@discordjs/rest": "^0.1.0-canary.0",
+    "discord-api-types": "^0.22.0",
+    "discord.js": "^13.1.0",
+    "mysql": "^2.18.1",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.36",
+    "typescript": "^4.3.5"
   },
   "description": "Crowne of Thrones Management Bot",
   "main": "index.js",
@@ -15,12 +22,12 @@
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-typescript": "^7.15.0",
     "@types/jest": "^27.0.1",
+    "@types/node": "^16.6.1",
     "babel-jest": "^27.0.6",
     "eslint": "^7.32.0",
     "jest": "^27.0.6",
     "prettier": "^2.3.2",
-    "ts-node": "^10.2.0",
-    "typescript": "^4.3.5"
+    "ts-node": "^10.2.0"
   },
   "scripts": {
     "build": "tsc",
