@@ -49,7 +49,7 @@ const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN);
 const discordClient = new Client({ intents });
 discordClient.on('interactionCreate', async (interaction: Interaction) => {
   if (!interaction.isCommand()) {
-    return;
+    return
   }
   switch (interaction.commandName.toLowerCase().trim()) {
   case 'ping':
