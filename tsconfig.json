@@ -3,7 +3,8 @@
     "lib": [
       "es5",
       "es6",
-      "es2019"
+      "es2019",
+      "dom",
     ],
     "module": "commonjs",
     "target": "es2019",
@@ -23,6 +24,8 @@
     ]
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "tests",
+    "jest.config.ts"
   ]
 }
