@@ -30,12 +30,12 @@ jobs:
     - run: npm test
     - run: npm i pm2 --no-save
     - run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_PRIVATE_KEY" > ./deploy.key
-          sudo chmod 600 ./deploy.key
-          echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+        mkdir -p ~/.ssh/
+        echo "$SSH_PRIVATE_KEY" > ./deploy.key
+        sudo chmod 600 ./deploy.key
+        echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
         shell: bash
         env:
-          SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-          SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
+        SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+        SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
     - run: pm2 deploy /home/cotbot/ecosystem.config.js production
