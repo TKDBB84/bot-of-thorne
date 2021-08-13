@@ -1,5 +1,5 @@
-import { Client, Intents, Interaction } from 'discord.js';
 import 'reflect-metadata';
+import { Client, Intents, Interaction } from 'discord.js';
 import { Connection, createConnection } from 'typeorm';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
