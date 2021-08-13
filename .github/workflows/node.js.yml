@@ -25,15 +25,17 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - name: 'install modules'
+    - name: 'Installing node_modules...'
       run: npm ci
-    - name: 'Run Tests'
+    - name: 'Linting...'
+      run: npm run lint
+    - name: 'Running Tests...'
       run: npm test
-    - name: 'Build JS'
+    - name: 'Building JS...'
       run: npm run build --if-present
-    - name: 'Install PM2'
+    - name: 'Install PM2...'
       run: npm i -g pm2
-    - name: Set up SSH
+    - name: 'Setting up SSH...'
       run: |
         mkdir -p ~/.ssh/
         echo "$SSH_PRIVATE_KEY" > ./deploy.key
@@ -43,5 +45,5 @@ jobs:
       env:
         SSH_PRIVATE_KEY: ${{secrets.SSH_PRIVATE_KEY}}
         SSH_KNOWN_HOSTS: ${{secrets.SSH_KNOWN_HOSTS}}
-    - name: 'Deploy To Prod'
+    - name: 'Deploying To Prod...'
       run: pm2 deploy /home/cotbot/ecosystem.config.js production
