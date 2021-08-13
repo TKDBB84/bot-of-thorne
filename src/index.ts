@@ -4,6 +4,7 @@ import { Connection, createConnection } from 'typeorm';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
+import { noop } from './consts';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
@@ -35,7 +36,8 @@ if (NODE_ENV !== 'production') {
     type: 'mariadb',
     username: 'sassybot',
   });
-} else {
+}
+else {
   dbConnection = createConnection();
 }
 
@@ -50,20 +52,18 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
     return;
   }
   switch (interaction.commandName.toLowerCase().trim()) {
-    case 'ping':
-      await interaction.reply({ content: 'Pong!', ephemeral: true });
-      break;
-    default:
-      return;
+  case 'ping':
+    await interaction.reply({ content: 'Pong!', ephemeral: true });
+    break;
+  default:
+    return;
   }
 });
 
-rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: pingSlashCommand.toJSON() }).then(() => {
-  dbConnection
-    .then(async () => {
-      await discordClient.login(DISCORD_TOKEN);
-    })
-    .catch((e) => {
-      console.error('error connecting to database', e);
-    });
-});
+const start = async () => {
+  void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: pingSlashCommand.toJSON() }));
+  void (await dbConnection);
+  void (await discordClient.login(DISCORD_TOKEN));
+};
+
+void start().then(noop).catch(console.error);

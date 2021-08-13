@@ -88,3 +88,7 @@ export enum EVENT_REPEATING_TYPE {
 }
 
 export const affirmativeResponses = ['yes', 'y', 'yup', 'sure', 'ye', 'yeah', 'si', 'yah', 'yea', 'yi', 'ye'];
+
+export const noop: () => void = () => {
+  // do nothing
+};
