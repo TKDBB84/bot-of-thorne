@@ -1,7 +1,4 @@
 name: automerge
-env:
-  MERGE_REMOVE_LABELS: "automerge"
-  MERGE_METHOD: "squash"
 on:
   pull_request:
     types:
@@ -28,3 +25,6 @@ jobs:
         uses: "pascalgn/automerge-action@v0.14.2"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "auto-merge"
+          UPDATE_LABELS: "auto-merge"
+          MERGE_METHOD: "squash"
