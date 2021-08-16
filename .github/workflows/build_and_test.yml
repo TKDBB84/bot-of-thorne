@@ -99,6 +99,17 @@ jobs:
         run: npm ci
       - name: 'Running Tests...'
         run: npm test
+  automerge:
+    if: ${{ github.event_name == 'pull_request' }}
+    needs: [ 'build', 'test', 'Analyze' ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: automerge
+        uses: "pascalgn/automerge-action@f81beb99aef41bb55ad072857d43073fba833a98"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_METHOD: "squash"
+
   deploy:
     if: ${{ github.event_name == 'push' }}
     needs: [ 'build', 'test', 'Analyze' ]
