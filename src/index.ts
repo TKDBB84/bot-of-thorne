@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { Client, Intents, Interaction } from 'discord.js';
 import { Connection, createConnection } from 'typeorm';
-import { SlashCommandBuilder } from '@discordjs/builders';
+// import { SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
+import { APIApplicationCommandOption, Routes } from 'discord-api-types/v9';
 import { noop } from './consts';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
@@ -40,11 +40,17 @@ if (NODE_ENV !== 'production') {
   dbConnection = createConnection();
 }
 
-const pingSlashCommand = new SlashCommandBuilder()
-  .setName('ping')
-  .setDescription('Replies with "pong" if bot is active');
+// const pingSlashCommand = new SlashCommandBuilder()
+//   .setName('ping')
+//   .setDescription('Replies with "pong" if bot is active');
 
-const body = [pingSlashCommand.toJSON()];
+const body: {
+  name: string;
+  description: string;
+  options: APIApplicationCommandOption[];
+}[] = [
+  // pingSlashCommand.toJSON()
+];
 
 const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN);
 const discordClient = new Client({ intents });
@@ -62,7 +68,9 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
 });
 
 const start = async () => {
-  void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body }));
+  if (body.length) {
+    void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body }));
+  }
   void (await dbConnection);
   void (await discordClient.login(DISCORD_TOKEN));
 };
