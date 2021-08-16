@@ -101,7 +101,7 @@ jobs:
         run: npm test
   deploy:
     if: ${{ github.event_name == 'push' }}
-    needs: [ 'build', 'test' ]
+    needs: [ 'build', 'test', 'Analyze' ]
 
     runs-on: ubuntu-latest
 
