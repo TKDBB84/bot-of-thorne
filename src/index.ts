@@ -36,14 +36,15 @@ if (NODE_ENV !== 'production') {
     type: 'mariadb',
     username: 'sassybot',
   });
-}
-else {
+} else {
   dbConnection = createConnection();
 }
 
 const pingSlashCommand = new SlashCommandBuilder()
   .setName('ping')
   .setDescription('Replies with "pong" if bot is active');
+
+const body = [pingSlashCommand.toJSON()];
 
 const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN);
 const discordClient = new Client({ intents });
@@ -52,16 +53,16 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
     return;
   }
   switch (interaction.commandName.toLowerCase().trim()) {
-  case 'ping':
-    await interaction.reply({ content: 'Pong!', ephemeral: true });
-    break;
-  default:
-    return;
+    case 'ping':
+      await interaction.reply({ content: 'Pong!', ephemeral: true });
+      break;
+    default:
+      return;
   }
 });
 
 const start = async () => {
-  void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: pingSlashCommand.toJSON() }));
+  void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body }));
   void (await dbConnection);
   void (await discordClient.login(DISCORD_TOKEN));
 };
