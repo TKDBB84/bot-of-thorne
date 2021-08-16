@@ -4,14 +4,12 @@
 name: Deploy
 
 on:
-  check_suite:
-    inputs:
-      git-ref:
-        description: Git Ref (Optional)
-        required: false
+  push:
+    branches: [ main ]
 
 jobs:
   deploy:
+    needs: ['analyze', 'build', 'test']
 
     runs-on: ubuntu-latest
 
@@ -22,12 +20,6 @@ jobs:
     steps:
     - name: Clone Repository (Latest)
       uses: actions/checkout@v2
-      if: github.event.inputs.git-ref == ''
-    - name: Clone Repository (Custom Ref)
-      uses: actions/checkout@v2
-      if: github.event.inputs.git-ref != ''
-      with:
-        ref: ${{ github.event.inputs.git-ref }}
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
@@ -35,8 +27,6 @@ jobs:
         cache: 'npm'
     - name: 'Installing node_modules...'
       run: npm ci
-    - name: 'Running Tests...'
-      run: npm test
     - name: 'Install PM2...'
       run: npm i -g pm2
     - name: 'Setting up SSH...'
