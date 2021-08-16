@@ -1,10 +1,10 @@
 import 'reflect-metadata';
 import { Client, Intents, Interaction } from 'discord.js';
 import { Connection, createConnection } from 'typeorm';
-// import { SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { APIApplicationCommandOption, Routes } from 'discord-api-types/v9';
 import { noop } from './consts';
+import slashCommands from './slash-commands';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
@@ -36,21 +36,23 @@ if (NODE_ENV !== 'production') {
     type: 'mariadb',
     username: 'sassybot',
   });
-} else {
+}
+else {
   dbConnection = createConnection();
 }
 
-// const pingSlashCommand = new SlashCommandBuilder()
-//   .setName('ping')
-//   .setDescription('Replies with "pong" if bot is active');
+const commandsRegistered = ['ping'];
 
-const body: {
+const toRegister: {
   name: string;
   description: string;
   options: APIApplicationCommandOption[];
-}[] = [
-  // pingSlashCommand.toJSON()
-];
+}[] = [];
+slashCommands.forEach((slashCommand) => {
+  if (!commandsRegistered.includes(slashCommand.command)) {
+    toRegister.push(slashCommand.commandRegistrationData);
+  }
+});
 
 const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN);
 const discordClient = new Client({ intents });
@@ -59,17 +61,17 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
     return;
   }
   switch (interaction.commandName.toLowerCase().trim()) {
-    case 'ping':
-      await interaction.reply({ content: 'Pong!', ephemeral: true });
-      break;
-    default:
-      return;
+  case 'ping':
+    await interaction.reply({ content: 'Pong!', ephemeral: true });
+    break;
+  default:
+    return;
   }
 });
 
 const start = async () => {
-  if (body.length) {
-    void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body }));
+  if (toRegister.length) {
+    void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: toRegister }));
   }
   void (await dbConnection);
   void (await discordClient.login(DISCORD_TOKEN));
