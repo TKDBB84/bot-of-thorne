@@ -105,10 +105,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: automerge
-        uses: "pascalgn/automerge-action@v0.14.2"
-        env:
-          GITHUB_TOKEN: "${{ secrets.GH_SECRET }}"
-          MERGE_METHOD: "squash"
+        uses: fastify/github-action-merge-dependabot@v2.4.0
+        with:
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
 
 #  deploy:
 #    if: ${{ github.event_name == 'push' }}
