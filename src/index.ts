@@ -36,8 +36,7 @@ if (NODE_ENV !== 'production') {
     type: 'mariadb',
     username: 'sassybot',
   });
-}
-else {
+} else {
   dbConnection = createConnection();
 }
 

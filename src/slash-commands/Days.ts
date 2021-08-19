@@ -25,7 +25,7 @@ export default class DaysCommand extends SlashCommand {
   public static readonly command = 'days';
   public static readonly commandRegistrationData = new SlashCommandBuilder()
     .setName(DaysCommand.command)
-    .setDescription("Returns the approximate number of days you've been in the FC")
+    .setDescription('Returns the approximate number of days you\'ve been in the FC')
     .addStringOption((option) =>
       option.setName('CharacterName').setDescription('Full FFXIV Character Name').setRequired(true),
     )
@@ -49,11 +49,11 @@ export default class DaysCommand extends SlashCommand {
     }
     if (!charName) {
       // try using claimed character
-      let char = await characterRepo.findOne({ where: { user: { discordUserId: sbUser.discordUserId } } });
+      const char = await characterRepo.findOne({ where: { user: { discordUserId: sbUser.discordUserId } } });
       if (!char) {
         await interaction.reply({
           content:
-            "Sorry It doesnt look like you've claimed a character, you can use the claim command to do that, or provide a character name",
+            'Sorry It doesnt look like you\'ve claimed a character, you can use the claim command to do that, or provide a character name',
         });
         return;
       }
@@ -71,7 +71,7 @@ export default class DaysCommand extends SlashCommand {
     }
     let char = await characterRepo
       .createQueryBuilder()
-      .where(`LOWER(name) = LOWER(:name)`, { name: charName.trim().toLowerCase() })
+      .where('LOWER(name) = LOWER(:name)', { name: charName.trim().toLowerCase() })
       .getOne();
     if (!char) {
       char = characterRepo.create();

@@ -36,8 +36,7 @@ export default class COTMember {
         cotPlayer.user = sbUser;
         cotPlayer.name = charName;
         cotPlayer = await cotPlayerRepo.save(cotPlayer, { reload: true });
-      }
-      else {
+      } else {
         cotPlayer = nameMatch;
         await cotPlayerRepo.update(cotPlayer.id, { user: sbUser });
       }
@@ -53,14 +52,12 @@ export default class COTMember {
       if (rank !== CotRanks.NEW) {
         try {
           cotMember = await cotMemberRepo.save(cotMember, { reload: true });
-        }
-        catch (error: unknown) {
+        } catch (error: unknown) {
           console.error('error saving member', [error, foundMember, cotMember]);
           throw error;
         }
       }
-    }
-    else {
+    } else {
       const firstSeenDiscord = cotMember.firstSeenDiscord ? cotMember.firstSeenDiscord : new Date();
       await cotMemberRepo.update(cotMember.id, { firstSeenDiscord, character: cotPlayer });
     }

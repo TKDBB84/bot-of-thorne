@@ -23,7 +23,7 @@
     "@typescript-eslint/no-shadow": "error",
     "brace-style": [
       "error",
-      "stroustrup",
+      "1tbs",
       {
         "allowSingleLine": true
       }
