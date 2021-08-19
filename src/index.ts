@@ -27,7 +27,7 @@ let dbConnection: Promise<Connection>;
 if (NODE_ENV !== 'production') {
   dbConnection = createConnection({
     database: 'sassybot',
-    entities: ['dist/entity/**/*.js', 'src/entity/**/*.ts'],
+    entities: ['dist/entities/**/*.js', 'src/entities/**/*.ts'],
     host: 'localhost',
     logging: true,
     password: 'sassy123',
