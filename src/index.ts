@@ -4,7 +4,7 @@ import { Connection, createConnection } from 'typeorm';
 import { REST } from '@discordjs/rest';
 import { APIApplicationCommandOption, Routes } from 'discord-api-types/v9';
 import { GuildIds, noop } from './consts';
-import { commandForGlobal, commandsForCoT, commandsForTesting } from './slash-commands';
+import allCommands, { commandForGlobal, commandsForCoT, commandsForTesting } from './slash-commands';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
@@ -40,7 +40,11 @@ if (NODE_ENV !== 'production') {
   dbConnection = createConnection();
 }
 
-const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = { global: ['ping'], test: [], CoT: [] };
+const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = {
+  global: ['ping'],
+  test: ['days'],
+  CoT: [],
+};
 
 const toRegisterGlobal: {
   name: string;
@@ -80,12 +84,11 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
   if (!interaction.isCommand()) {
     return;
   }
-  switch (interaction.commandName.toLowerCase().trim()) {
-    case 'ping':
-      await interaction.reply({ content: 'Pong!', ephemeral: true });
-      break;
-    default:
-      return;
+  let command = allCommands.find(
+    (command) => command.command.trim().toLowerCase() === interaction.commandName.trim().toLowerCase(),
+  );
+  if (command) {
+    await command.exec(interaction);
   }
 });
 
