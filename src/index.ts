@@ -84,9 +84,11 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
   if (!interaction.isCommand()) {
     return;
   }
+  console.log({recievedCommand: interaction.commandName, interaction})
   const command = allCommands.find(
     (_command) => _command.command.trim().toLowerCase() === interaction.commandName.trim().toLowerCase(),
   );
+  console.log({foundBotCommand: command})
   if (command) {
     await command.exec(interaction);
   }
