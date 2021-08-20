@@ -35,8 +35,7 @@ const DaysCommand: SlashCommand = {
     const { XIV_API_TOKEN } = process.env;
     if (
       !interaction.inGuild() ||
-      interaction.guildId === GuildIds.COT_GUILD_ID ||
-      interaction.guildId === GuildIds.SASNERS_TEST_SERVER_GUILD_ID
+      (interaction.guildId !== GuildIds.COT_GUILD_ID && interaction.guildId !== GuildIds.SASNERS_TEST_SERVER_GUILD_ID)
     ) {
       return;
     }
@@ -116,8 +115,8 @@ const DaysCommand: SlashCommand = {
     char.firstSeenApi = new Date();
     char.apiId = +matchingMember.ID;
     char.name = matchingMember.Name.trim();
-    char = await characterRepo.save(char, {reload: true});
-    console.log({savedChar: char})
+    char = await characterRepo.save(char, { reload: true });
+    console.log({ savedChar: char });
     await interaction.reply({
       content: `${char.name} has been in the FC for approximately less than 1 day`,
     });
