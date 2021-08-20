@@ -1,39 +1,43 @@
 import { CommandInteraction } from 'discord.js';
-import SlashCommand from './SlashCommand';
+import { SlashCommand } from './SlashCommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts';
 import { getRepository } from 'typeorm';
 import { SbUser, FFXIVChar } from '../entities';
-import moment from 'moment';
 import XIVApi from '@xivapi/js';
+import dayjs from 'dayjs';
 
-const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date | moment.Moment }): number => {
-  const firstSeen = moment(firstSeenApi);
-  const firstPull = moment(new Date(2019, 9, 11, 23, 59, 59));
-  const beginningOfTime = moment(new Date(2019, 8, 2, 23, 59, 59));
+const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): number => {
+  const firstSeen = dayjs(firstSeenApi);
+  const firstPull = dayjs(new Date(2019, 9, 11, 23, 59, 59));
+  const beginningOfTime = dayjs(new Date(2019, 8, 2, 23, 59, 59));
 
   if (firstSeen.isBefore(beginningOfTime)) {
-    return moment().diff(beginningOfTime, 'd');
+    return dayjs().diff(beginningOfTime, 'd');
   } else if (firstSeen.isAfter(beginningOfTime) && firstSeen.isBefore(firstPull)) {
-    return moment().diff(beginningOfTime, 'd');
+    return dayjs().diff(beginningOfTime, 'd');
   } else {
-    return moment().diff(firstSeen, 'd');
+    return dayjs().diff(firstSeen, 'd');
   }
 };
 
-export default class DaysCommand extends SlashCommand {
-  public static readonly command = 'days';
-  public static readonly commandRegistrationData = new SlashCommandBuilder()
-    .setName(DaysCommand.command)
-    .setDescription('Returns the approximate number of days you\'ve been in the FC')
+const DaysCommand: SlashCommand = {
+  command: 'days',
+  commandRegistrationData: new SlashCommandBuilder()
+    .setName('days')
+    .setDescription("Returns the approximate number of days you've been in the FC")
     .addStringOption((option) =>
       option.setName('CharacterName').setDescription('Full FFXIV Character Name').setRequired(true),
     )
-    .toJSON();
+    .toJSON(),
 
-  public static async exec(interaction: CommandInteraction): Promise<void> {
+  async exec(interaction: CommandInteraction): Promise<void> {
     const { XIV_API_TOKEN } = process.env;
-    if (!interaction.inGuild() || interaction.guildId !== GuildIds.COT_GUILD_ID) {
+    if (
+      !interaction.inGuild() ||
+      interaction.guildId === GuildIds.COT_GUILD_ID ||
+      interaction.guildId === GuildIds.SASNERS_TEST_SERVER_GUILD_ID
+    ) {
       return;
     }
     const sbUserRepo = getRepository(SbUser);
@@ -53,7 +57,7 @@ export default class DaysCommand extends SlashCommand {
       if (!char) {
         await interaction.reply({
           content:
-            'Sorry It doesnt look like you\'ve claimed a character, you can use the claim command to do that, or provide a character name',
+            "Sorry It doesnt look like you've claimed a character, you can use the claim command to do that, or provide a character name",
         });
         return;
       }
@@ -112,5 +116,7 @@ export default class DaysCommand extends SlashCommand {
       content: `${char.name} has been in the FC for approximately ${numDays} days`,
     });
     return;
-  }
-}
+  },
+};
+
+export default DaysCommand;

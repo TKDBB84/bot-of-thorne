@@ -1,15 +1,17 @@
 import { CommandInteraction } from 'discord.js';
-import SlashCommand from './SlashCommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommand } from './SlashCommand';
 
-export default class PingCommand extends SlashCommand {
-  public static readonly command = 'ping';
-  public static readonly commandRegistrationData = new SlashCommandBuilder()
+const PingCommand: SlashCommand = {
+  command: 'ping',
+  commandRegistrationData: new SlashCommandBuilder()
     .setName('ping')
     .setDescription('Replies with "pong" if bot is active')
-    .toJSON();
+    .toJSON(),
 
-  public static async exec(interaction: CommandInteraction): Promise<void> {
+  async exec(interaction: CommandInteraction): Promise<void> {
     await interaction.reply({ content: 'Pong!', ephemeral: true });
-  }
-}
+  },
+};
+
+export default PingCommand;
