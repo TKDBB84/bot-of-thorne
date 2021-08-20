@@ -86,10 +86,10 @@ const DaysCommand: SlashCommand = {
       const linkEmbed = new MessageEmbed()
         .setAuthor(
           'Bot of Thorne',
-          'https://img.finalfantasyxiv.com/lds/pc/global/images/favicon.ico?1490749553',
+          'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
           'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
         )
-        .setTitle(charName)
+        .setTitle(char.name || charName)
         .addFields({ name: 'Time In FC', value: `${numDays} days` });
       if (char.apiId) {
         linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
@@ -132,7 +132,7 @@ const DaysCommand: SlashCommand = {
         'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
         'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
       )
-      .setTitle(charName)
+      .setTitle(char.name || matchingMember.Name || charName)
       .addFields({ name: 'Time In FC', value: 'less than 1 day' });
     if (char.apiId) {
       linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
