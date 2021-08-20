@@ -27,7 +27,7 @@ const DaysCommand: SlashCommand = {
     .setName('days')
     .setDescription("Returns the approximate number of days you've been in the FC")
     .addStringOption((option) =>
-      option.setName('character_name').setDescription('Full FFXIV Character Name').setRequired(true),
+      option.setName('character_name').setDescription('Full FFXIV Character Name').setRequired(false),
     )
     .toJSON(),
 
@@ -45,6 +45,7 @@ const DaysCommand: SlashCommand = {
 
     const discordId = interaction.member.user.id;
     const charName = interaction.options.getString('character_name', false);
+    console.log({ charNameArg: charName });
     let sbUser = await sbUserRepo.findOne(discordId);
     if (!sbUser) {
       sbUser = new SbUser();
@@ -79,6 +80,8 @@ const DaysCommand: SlashCommand = {
       .createQueryBuilder()
       .where('LOWER(name) = LOWER(:name)', { name: charName.trim().toLowerCase() })
       .getOne();
+
+    console.log({ foundChar: char });
     if (char && char.firstSeenApi) {
       const numDays = getNumberOFDays(char);
       await interaction.reply({
@@ -94,12 +97,14 @@ const DaysCommand: SlashCommand = {
       }
     }
     if (!char || !char.apiId) {
-      const { FreeCompanyMembers } = xivClient.freecompany.get(CoTAPIId, { data: 'FCM' });
+      const { FreeCompanyMembers = [] } = xivClient.freecompany.get(CoTAPIId, { data: 'FCM' });
+      console.log({ searchResults: FreeCompanyMembers });
       matchingMember = FreeCompanyMembers.find(
         (member) => member.Name.trim().toLowerCase() === charName.trim().toLowerCase(),
       );
     }
 
+    console.log({ matchingMember });
     if (!matchingMember) {
       await interaction.reply({
         content: `Sorry I can't find a record of ${charName.trim()} in the FC through the lodestone.`,
@@ -111,7 +116,8 @@ const DaysCommand: SlashCommand = {
     char.firstSeenApi = new Date();
     char.apiId = +matchingMember.ID;
     char.name = matchingMember.Name.trim();
-    await characterRepo.save(char);
+    char = await characterRepo.save(char, {reload: true});
+    console.log({savedChar: char})
     await interaction.reply({
       content: `${char.name} has been in the FC for approximately less than 1 day`,
     });
