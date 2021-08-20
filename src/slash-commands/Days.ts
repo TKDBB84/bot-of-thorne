@@ -4,7 +4,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts';
 import { getRepository } from 'typeorm';
 import { SbUser, FFXIVChar } from '../entities';
-import XivCharacterCards from 'xiv-character-cards';
+const { CardCreator } = require('xiv-character-cards');
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
 
@@ -94,7 +94,7 @@ const DaysCommand: SlashCommand = {
         .addFields({ name: 'Time In FC', value: `${numDays} days` });
       if (char.apiId) {
         await interaction.deferReply();
-        const card = new XivCharacterCards();
+        const card = new CardCreator();
         await card.ensureInit();
         const cardBuffer = await card.createCard(char.apiId);
         const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -102,7 +102,7 @@ const DaysCommand: SlashCommand = {
         linkEmbed.setImage(`attachment://${fileName}`);
         linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
         await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
-        return
+        return;
       }
 
       await interaction.reply({ embeds: [linkEmbed] });
@@ -145,8 +145,8 @@ const DaysCommand: SlashCommand = {
       .setTitle(char.name || matchingMember.Name || charName)
       .addFields({ name: 'Time In FC', value: 'less than 1 day' });
     if (char.apiId) {
-      await interaction.deferReply();
-      const card = new XivCharacterCards();
+      await interaction.deferReply({ fetchReply: true });
+      const card = new CardCreator();
       await card.ensureInit();
       const cardBuffer = await card.createCard(char.apiId);
       const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
@@ -154,7 +154,7 @@ const DaysCommand: SlashCommand = {
       linkEmbed.setImage(`attachment://${fileName}`);
       linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
       await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
-      return
+      return;
     }
 
     await interaction.reply({ embeds: [linkEmbed] });
