@@ -129,7 +129,7 @@ const DaysCommand: SlashCommand = {
     const linkEmbed = new MessageEmbed()
       .setAuthor(
         'Bot of Thorne',
-        'https://img.finalfantasyxiv.com/lds/pc/global/images/favicon.ico?1490749553',
+        'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
         'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
       )
       .setTitle(charName)
