@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { SlashCommand } from './SlashCommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts';
@@ -83,9 +83,19 @@ const DaysCommand: SlashCommand = {
     console.log({ foundChar: char });
     if (char && char.firstSeenApi) {
       const numDays = getNumberOFDays(char);
-      await interaction.reply({
-        content: `${char.name} has been in the FC for approximately ${numDays} days`,
-      });
+      const linkEmbed = new MessageEmbed()
+        .setAuthor(
+          'Bot of Thorne',
+          'https://img.finalfantasyxiv.com/lds/pc/global/images/favicon.ico?1490749553',
+          'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
+        )
+        .setTitle(charName)
+        .addFields({ name: 'Time In FC', value: `${numDays} days` });
+      if (char.apiId) {
+        linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
+      }
+
+      await interaction.reply({ embeds: [linkEmbed] });
       return;
     }
 
@@ -116,10 +126,19 @@ const DaysCommand: SlashCommand = {
     char.apiId = +matchingMember.ID;
     char.name = matchingMember.Name.trim();
     char = await characterRepo.save(char, { reload: true });
-    console.log({ savedChar: char });
-    await interaction.reply({
-      content: `${char.name} has been in the FC for approximately less than 1 day`,
-    });
+    const linkEmbed = new MessageEmbed()
+      .setAuthor(
+        'Bot of Thorne',
+        'https://img.finalfantasyxiv.com/lds/pc/global/images/favicon.ico?1490749553',
+        'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
+      )
+      .setTitle(charName)
+      .addFields({ name: 'Time In FC', value: 'less than 1 day' });
+    if (char.apiId) {
+      linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
+    }
+
+    await interaction.reply({ embeds: [linkEmbed] });
     return;
   },
 };
