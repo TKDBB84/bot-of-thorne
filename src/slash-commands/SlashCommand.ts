@@ -8,5 +8,5 @@ export declare interface SlashCommand {
     description: string;
     options: APIApplicationCommandOption[];
   };
-  readonly exec: (interaction: CommandInteraction) => Promise<void>
+  readonly exec: (interaction: CommandInteraction) => Promise<void>;
 }
