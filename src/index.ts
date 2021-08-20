@@ -81,11 +81,11 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
     return;
   }
   switch (interaction.commandName.toLowerCase().trim()) {
-  case 'ping':
-    await interaction.reply({ content: 'Pong!', ephemeral: true });
-    break;
-  default:
-    return;
+    case 'ping':
+      await interaction.reply({ content: 'Pong!', ephemeral: true });
+      break;
+    default:
+      return;
   }
 });
 

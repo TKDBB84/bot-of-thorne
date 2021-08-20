@@ -25,7 +25,7 @@ const DaysCommand: SlashCommand = {
   command: 'days',
   commandRegistrationData: new SlashCommandBuilder()
     .setName('days')
-    .setDescription('Returns the approximate number of days you\'ve been in the FC')
+    .setDescription("Returns the approximate number of days you've been in the FC")
     .addStringOption((option) =>
       option.setName('CharacterName').setDescription('Full FFXIV Character Name').setRequired(true),
     )
@@ -57,7 +57,7 @@ const DaysCommand: SlashCommand = {
       if (!char) {
         await interaction.reply({
           content:
-            'Sorry It doesnt look like you\'ve claimed a character, you can use the claim command to do that, or provide a character name',
+            "Sorry It doesnt look like you've claimed a character, you can use the claim command to do that, or provide a character name",
         });
         return;
       }

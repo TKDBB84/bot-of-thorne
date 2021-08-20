@@ -95,19 +95,19 @@ export default class COTMember {
   public async promote(): Promise<COTMember> {
     let newRank;
     switch (this.rank) {
-    case CotRanks.NEW:
-      newRank = CotRanks.RECRUIT;
-      break;
-    case CotRanks.MEMBER:
-      newRank = CotRanks.VETERAN;
-      break;
-    case CotRanks.VETERAN:
-      newRank = CotRanks.OFFICER;
-      break;
-    default:
-    case CotRanks.RECRUIT:
-      newRank = CotRanks.MEMBER;
-      break;
+      case CotRanks.NEW:
+        newRank = CotRanks.RECRUIT;
+        break;
+      case CotRanks.MEMBER:
+        newRank = CotRanks.VETERAN;
+        break;
+      case CotRanks.VETERAN:
+        newRank = CotRanks.OFFICER;
+        break;
+      default:
+      case CotRanks.RECRUIT:
+        newRank = CotRanks.MEMBER;
+        break;
     }
     const lastPromotion = new Date();
     await getManager().getRepository(COTMember).update(this.id, { lastPromotion, rank: newRank });
