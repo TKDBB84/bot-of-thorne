@@ -1,9 +1,10 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { CommandInteraction, MessageAttachment, MessageEmbed } from 'discord.js';
 import { SlashCommand } from './SlashCommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts';
 import { getRepository } from 'typeorm';
 import { SbUser, FFXIVChar } from '../entities';
+import XivCharacterCards from 'xiv-character-cards';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
 
@@ -92,8 +93,16 @@ const DaysCommand: SlashCommand = {
         .setTitle(char.name || charName)
         .addFields({ name: 'Time In FC', value: `${numDays} days` });
       if (char.apiId) {
-        linkEmbed.setImage(`https://ffxiv-character-cards.herokuapp.com/characters/id/${char.apiId}.png`)
+        await interaction.deferReply();
+        const card = new XivCharacterCards();
+        await card.ensureInit();
+        const cardBuffer = await card.createCard(char.apiId);
+        const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+        const attachment = new MessageAttachment(cardBuffer).setName(fileName);
+        linkEmbed.setImage(`attachment://${fileName}`);
         linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
+        await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
+        return
       }
 
       await interaction.reply({ embeds: [linkEmbed] });
@@ -136,8 +145,16 @@ const DaysCommand: SlashCommand = {
       .setTitle(char.name || matchingMember.Name || charName)
       .addFields({ name: 'Time In FC', value: 'less than 1 day' });
     if (char.apiId) {
-      linkEmbed.setImage(`https://ffxiv-character-cards.herokuapp.com/characters/id/${char.apiId}.png`)
+      await interaction.deferReply();
+      const card = new XivCharacterCards();
+      await card.ensureInit();
+      const cardBuffer = await card.createCard(char.apiId);
+      const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const attachment = new MessageAttachment(cardBuffer).setName(fileName);
+      linkEmbed.setImage(`attachment://${fileName}`);
       linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
+      await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
+      return
     }
 
     await interaction.reply({ embeds: [linkEmbed] });
