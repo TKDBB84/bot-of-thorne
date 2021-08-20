@@ -73,47 +73,47 @@ const DaysCommand: SlashCommand = {
       });
       return;
     }
+    const xivClient = new XIVApi({ private_key: XIV_API_TOKEN, language: 'en' });
+    let matchingMember: XivApiCharacterSearchResult | undefined;
     let char = await characterRepo
       .createQueryBuilder()
       .where('LOWER(name) = LOWER(:name)', { name: charName.trim().toLowerCase() })
       .getOne();
-    if (!char) {
-      char = characterRepo.create();
-      char.name = charName.trim();
-      char.user = sbUser;
-      await characterRepo.save(char);
+    if (char && char.firstSeenApi) {
+      const numDays = getNumberOFDays(char);
+      await interaction.reply({
+        content: `${char.name} has been in the FC for approximately ${numDays} days`,
+      });
+      return;
     }
 
-    if (!char.firstSeenApi) {
-      // lets check the API first
-      const xivClient = new XIVApi({ private_key: XIV_API_TOKEN, language: 'en' });
-      let matchingMember: XivApiCharacterSearchResult | undefined;
-      if (!char.apiId) {
-        const { FreeCompanyMembers } = xivClient.freecompany.get(CoTAPIId, { data: 'FCM' });
-        matchingMember = FreeCompanyMembers.find(
-          (member) => member.Name.trim().toLowerCase() === charName.trim().toLowerCase(),
-        );
-      } else {
-        const { FreeCompany = null, Character = null } = xivClient.character.get(char.apiId.toString(), { data: 'FC' });
-        if (FreeCompany && FreeCompany.Name.trim().toLowerCase() === 'Crowne of Thorne' && Character) {
-          matchingMember = Character;
-        }
-      }
-      if (!matchingMember) {
-        await interaction.reply({
-          content: `Sorry I have no record of ${char.name} in the FC`,
-        });
-        return;
-      } else {
-        char.firstSeenApi = new Date();
-        char.apiId = +matchingMember.ID;
-        char.name = matchingMember.Name.trim();
-        await characterRepo.save(char);
+    if (char && char.apiId) {
+      const { FreeCompany = null, Character = null } = xivClient.character.get(char.apiId.toString(), { data: 'FC' });
+      if (FreeCompany && FreeCompany.Name.trim().toLowerCase() === 'Crowne of Thorne' && Character) {
+        matchingMember = Character;
       }
     }
-    const numDays = getNumberOFDays(char);
+    if (!char || !char.apiId) {
+      const { FreeCompanyMembers } = xivClient.freecompany.get(CoTAPIId, { data: 'FCM' });
+      matchingMember = FreeCompanyMembers.find(
+        (member) => member.Name.trim().toLowerCase() === charName.trim().toLowerCase(),
+      );
+    }
+
+    if (!matchingMember) {
+      await interaction.reply({
+        content: `Sorry I can't find a record of ${charName.trim()} in the FC through the lodestone.`,
+      });
+      return;
+    }
+
+    char = characterRepo.create();
+    char.firstSeenApi = new Date();
+    char.apiId = +matchingMember.ID;
+    char.name = matchingMember.Name.trim();
+    await characterRepo.save(char);
     await interaction.reply({
-      content: `${char.name} has been in the FC for approximately ${numDays} days`,
+      content: `${char.name} has been in the FC for approximately less than 1 day`,
     });
     return;
   },
