@@ -27,7 +27,7 @@ const DaysCommand: SlashCommand = {
     .setName('days')
     .setDescription("Returns the approximate number of days you've been in the FC")
     .addStringOption((option) =>
-      option.setName('CharacterName').setDescription('Full FFXIV Character Name').setRequired(true),
+      option.setName('character_name').setDescription('Full FFXIV Character Name').setRequired(true),
     )
     .toJSON(),
 
@@ -44,7 +44,7 @@ const DaysCommand: SlashCommand = {
     const characterRepo = getRepository(FFXIVChar);
 
     const discordId = interaction.member.user.id;
-    const charName = interaction.options.getString('CharacterName', false);
+    const charName = interaction.options.getString('character_name', false);
     let sbUser = await sbUserRepo.findOne(discordId);
     if (!sbUser) {
       sbUser = new SbUser();
