@@ -98,8 +98,8 @@ const DaysCommand: SlashCommand = {
         await card.ensureInit();
         const cardBuffer = await card.createCard(char.apiId);
         const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const attachment = new MessageAttachment(cardBuffer).setName(fileName);
-        linkEmbed.setImage(`attachment://${fileName}`);
+        const attachment = new MessageAttachment(cardBuffer, `${fileName}.png`);
+        linkEmbed.setImage(`attachment://${fileName}.png`);
         linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
         await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
         return;
@@ -150,8 +150,8 @@ const DaysCommand: SlashCommand = {
       await card.ensureInit();
       const cardBuffer = await card.createCard(char.apiId);
       const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const attachment = new MessageAttachment(cardBuffer).setName(fileName);
-      linkEmbed.setImage(`attachment://${fileName}`);
+      const attachment = new MessageAttachment(cardBuffer, `${fileName}.png`);
+      linkEmbed.setImage(`attachment://${fileName}.png`);
       linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
       await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
       return;
