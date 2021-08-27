@@ -27,7 +27,7 @@
     "@types/node": "^16.7.4",
     "@types/node-fetch": "^2.5.12",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
-    "babel-jest": "^27.0.6",
+    "babel-jest": "^27.1.0",
     "discord-api-types": "^0.22.0",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
