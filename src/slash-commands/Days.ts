@@ -5,7 +5,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts';
 import { getRepository } from 'typeorm';
 import { SbUser, FFXIVChar } from '../entities';
-const { CardCreator } = require('xiv-character-cards');
+import CardCreator from 'xiv-character-cards';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
 
