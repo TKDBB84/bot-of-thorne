@@ -1,4 +1,3 @@
-
 import { CommandInteraction, MessageAttachment, MessageEmbed } from 'discord.js';
 import { SlashCommand } from './SlashCommand';
 import { SlashCommandBuilder } from '@discordjs/builders';
@@ -21,6 +20,46 @@ const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): num
   } else {
     return dayjs().diff(firstSeen, 'd');
   }
+};
+
+const getCharacterCard: (apiId: number) => Promise<Buffer> = async (apiId: number) => {
+  const card = new CardCreator();
+  await card.ensureInit();
+  return card.createCard(apiId);
+};
+
+const replyWithDaysEmbed: (char: FFXIVChar, interaction: CommandInteraction) => Promise<void> = async (
+  char: FFXIVChar,
+  interaction: CommandInteraction,
+) => {
+  const numDays = getNumberOFDays(char);
+  const embed = new MessageEmbed()
+    .setAuthor(
+      'Crowne of Thorne Member',
+      'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
+      'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
+    )
+    .setTitle(char.name)
+    .addFields({ name: 'Time In FC', value: `${numDays} days` });
+
+  if (char.apiId) {
+    await interaction.deferReply();
+    let cardBuffer: Buffer | false;
+    try {
+      cardBuffer = await getCharacterCard(char.apiId);
+    } catch (e) {
+      cardBuffer = false;
+    }
+    if (cardBuffer) {
+      const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const attachment = new MessageAttachment(cardBuffer, `${fileName}.png`);
+      embed.setImage(`attachment://${fileName}.png`);
+      embed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
+      await interaction.editReply({ embeds: [embed], files: [attachment] });
+      return;
+    }
+  }
+  await interaction.reply({ embeds: [embed] });
 };
 
 const DaysCommand: SlashCommand = {
@@ -84,29 +123,7 @@ const DaysCommand: SlashCommand = {
 
     console.log({ foundChar: char });
     if (char && char.firstSeenApi) {
-      const numDays = getNumberOFDays(char);
-      const linkEmbed = new MessageEmbed()
-        .setAuthor(
-          'Crowne of Thorne Member',
-          'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
-          'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
-        )
-        .setTitle(char.name || charName)
-        .addFields({ name: 'Time In FC', value: `${numDays} days` });
-      if (char.apiId) {
-        await interaction.deferReply();
-        const card = new CardCreator();
-        await card.ensureInit();
-        const cardBuffer = await card.createCard(char.apiId);
-        const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-        const attachment = new MessageAttachment(cardBuffer, `${fileName}.png`);
-        linkEmbed.setImage(`attachment://${fileName}.png`);
-        linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
-        await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
-        return;
-      }
-
-      await interaction.reply({ embeds: [linkEmbed] });
+      await replyWithDaysEmbed(char, interaction);
       return;
     }
 
@@ -137,28 +154,7 @@ const DaysCommand: SlashCommand = {
     char.apiId = +matchingMember.ID;
     char.name = matchingMember.Name.trim();
     char = await characterRepo.save(char, { reload: true });
-    const linkEmbed = new MessageEmbed()
-      .setAuthor(
-        'Bot of Thorne',
-        'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
-        'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
-      )
-      .setTitle(char.name || matchingMember.Name || charName)
-      .addFields({ name: 'Time In FC', value: 'less than 1 day' });
-    if (char.apiId) {
-      await interaction.deferReply({ fetchReply: true });
-      const card = new CardCreator();
-      await card.ensureInit();
-      const cardBuffer = await card.createCard(char.apiId);
-      const fileName = char.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const attachment = new MessageAttachment(cardBuffer, `${fileName}.png`);
-      linkEmbed.setImage(`attachment://${fileName}.png`);
-      linkEmbed.setURL(`https://na.finalfantasyxiv.com/lodestone/character/${char.apiId}/`);
-      await interaction.editReply({ embeds: [linkEmbed], files: [attachment] });
-      return;
-    }
-
-    await interaction.reply({ embeds: [linkEmbed] });
+    await replyWithDaysEmbed(char, interaction);
     return;
   },
 };
