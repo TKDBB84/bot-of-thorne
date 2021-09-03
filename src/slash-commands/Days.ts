@@ -85,7 +85,7 @@ const DaysCommand: SlashCommand = {
 
     const discordId = interaction.member.user.id;
     const charName = interaction.options.getString('character_name', false);
-    console.log({ charNameArg: charName });
+
     let sbUser = await sbUserRepo.findOne(discordId);
     if (!sbUser) {
       sbUser = new SbUser();
