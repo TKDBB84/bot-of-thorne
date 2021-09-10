@@ -9,7 +9,7 @@
     "@discordjs/builders": "^0.6.0",
     "@discordjs/rest": "^0.1.0-canary.0",
     "@xivapi/js": "^0.3.3",
-    "dayjs": "^1.10.6",
+    "dayjs": "^1.10.7",
     "discord.js": "^13.1.0",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
