@@ -6,7 +6,7 @@
     "npm": "^7"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.6.0",
+    "@discordjs/builders": "^0.9.0",
     "@discordjs/rest": "^0.2.0-canary.0",
     "@xivapi/js": "^0.3.3",
     "dayjs": "^1.10.7",
