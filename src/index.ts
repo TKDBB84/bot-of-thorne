@@ -5,7 +5,7 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { GuildIds, noop } from './consts';
 import allCommands, { commandsDataForGlobal, commandsDataForCoT, commandsDataForTesting } from './slash-commands';
-import { CommandRegistrationData } from './slash-commands/SlashCommand';
+import { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
@@ -47,20 +47,20 @@ const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = 
   CoT: [],
 };
 
-const toRegisterGlobal: CommandRegistrationData[] = [];
+const toRegisterGlobal: RESTPostAPIApplicationCommandsJSONBody[] = [];
 commandsDataForGlobal.forEach((slashCommand) => {
   if (!commandsRegistered.global.includes(slashCommand.command)) {
     toRegisterGlobal.push(slashCommand.commandRegistrationData);
   }
 });
 
-const toRegisterForTest: CommandRegistrationData[] = [];
+const toRegisterForTest: RESTPostAPIApplicationCommandsJSONBody[] = [];
 commandsDataForTesting.forEach((slashCommand) => {
   if (!commandsRegistered.test.includes(slashCommand.command)) {
     toRegisterForTest.push(slashCommand.commandRegistrationData);
   }
 });
-const toRegisterForCoT: CommandRegistrationData[] = [];
+const toRegisterForCoT: RESTPostAPIApplicationCommandsJSONBody[] = [];
 commandsDataForCoT.forEach((slashCommand) => {
   if (!commandsRegistered.CoT.includes(slashCommand.command)) {
     toRegisterForCoT.push(slashCommand.commandRegistrationData);
