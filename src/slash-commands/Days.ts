@@ -1,6 +1,6 @@
 import { CommandInteraction, MessageAttachment, MessageEmbed } from 'discord.js';
 import { SlashCommand } from './SlashCommand';
-import { SlashCommandBuilder } from '@discordjs/builders';
+import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts';
 import { getRepository } from 'typeorm';
 import { SbUser, FFXIVChar } from '../entities';
@@ -21,6 +21,14 @@ const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): num
     return dayjs().diff(firstSeen, 'd');
   }
 };
+
+const commandRegistrationData = new SlashCommandBuilder()
+  .setName('days')
+  .setDescription("Returns the approximate number of days you've been in the FC")
+  .addStringOption((option: SlashCommandStringOption) =>
+    option.setName('character_name').setDescription('Full FFXIV Character Name').setRequired(false),
+  )
+  .toJSON();
 
 const getCharacterCard: (apiId: number) => Promise<Buffer> = async (apiId: number) => {
   const card = new CardCreator();
@@ -64,13 +72,7 @@ const replyWithDaysEmbed: (char: FFXIVChar, interaction: CommandInteraction) => 
 
 const DaysCommand: SlashCommand = {
   command: 'days',
-  commandRegistrationData: new SlashCommandBuilder()
-    .setName('days')
-    .setDescription("Returns the approximate number of days you've been in the FC")
-    .addStringOption((option) =>
-      option.setName('character_name').setDescription('Full FFXIV Character Name').setRequired(false),
-    )
-    .toJSON(),
+  commandRegistrationData,
 
   async exec(interaction: CommandInteraction): Promise<void> {
     const { XIV_API_TOKEN } = process.env;
