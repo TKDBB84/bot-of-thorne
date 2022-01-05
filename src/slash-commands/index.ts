@@ -3,6 +3,6 @@ import PingCommand from './Ping';
 import { SlashCommand } from './SlashCommand';
 
 export default [DaysCommand, PingCommand];
-export const commandForGlobal: SlashCommand[] = [PingCommand];
-export const commandsForTesting: SlashCommand[] = [DaysCommand];
-export const commandsForCoT: SlashCommand[] = [];
+export const commandsDataForGlobal: SlashCommand[] = [PingCommand];
+export const commandsDataForTesting: SlashCommand[] = [DaysCommand];
+export const commandsDataForCoT: SlashCommand[] = [];

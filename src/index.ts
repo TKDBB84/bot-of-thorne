@@ -2,9 +2,10 @@ import 'reflect-metadata';
 import { Client, Intents, Interaction } from 'discord.js';
 import { Connection, createConnection } from 'typeorm';
 import { REST } from '@discordjs/rest';
-import { APIApplicationCommandOption, Routes } from 'discord-api-types/v9';
+import { Routes } from 'discord-api-types/v9';
 import { GuildIds, noop } from './consts';
-import allCommands, { commandForGlobal, commandsForCoT, commandsForTesting } from './slash-commands';
+import allCommands, { commandsDataForGlobal, commandsDataForCoT, commandsDataForTesting } from './slash-commands';
+import { CommandRegistrationData } from './slash-commands/SlashCommand';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
@@ -46,33 +47,21 @@ const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = 
   CoT: [],
 };
 
-const toRegisterGlobal: {
-  name: string;
-  description: string;
-  options: APIApplicationCommandOption[];
-}[] = [];
-commandForGlobal.forEach((slashCommand) => {
+const toRegisterGlobal: CommandRegistrationData[] = [];
+commandsDataForGlobal.forEach((slashCommand) => {
   if (!commandsRegistered.global.includes(slashCommand.command)) {
     toRegisterGlobal.push(slashCommand.commandRegistrationData);
   }
 });
 
-const toRegisterForTest: {
-  name: string;
-  description: string;
-  options: APIApplicationCommandOption[];
-}[] = [];
-commandsForTesting.forEach((slashCommand) => {
+const toRegisterForTest: CommandRegistrationData[] = [];
+commandsDataForTesting.forEach((slashCommand) => {
   if (!commandsRegistered.test.includes(slashCommand.command)) {
     toRegisterForTest.push(slashCommand.commandRegistrationData);
   }
 });
-const toRegisterForCoT: {
-  name: string;
-  description: string;
-  options: APIApplicationCommandOption[];
-}[] = [];
-commandsForCoT.forEach((slashCommand) => {
+const toRegisterForCoT: CommandRegistrationData[] = [];
+commandsDataForCoT.forEach((slashCommand) => {
   if (!commandsRegistered.CoT.includes(slashCommand.command)) {
     toRegisterForCoT.push(slashCommand.commandRegistrationData);
   }
@@ -84,11 +73,11 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
   if (!interaction.isCommand()) {
     return;
   }
-  console.log({recievedCommand: interaction.commandName, interaction})
+
   const command = allCommands.find(
     (_command) => _command.command.trim().toLowerCase() === interaction.commandName.trim().toLowerCase(),
   );
-  console.log({foundBotCommand: command})
+
   if (command) {
     await command.exec(interaction);
   }
@@ -96,16 +85,18 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
 
 const start = async () => {
   if (toRegisterGlobal.length) {
-    void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), { body: toRegisterGlobal }));
+    void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
+      body: toRegisterGlobal.map((command) => command),
+    }));
   }
   if (toRegisterForCoT.length) {
     void (await rest.put(Routes.applicationGuildCommands(DISCORD_CLIENT_ID, GuildIds.COT_GUILD_ID), {
-      body: toRegisterForCoT,
+      body: toRegisterForCoT.map((command) => command),
     }));
   }
   if (toRegisterForTest.length) {
     void (await rest.put(Routes.applicationGuildCommands(DISCORD_CLIENT_ID, GuildIds.SASNERS_TEST_SERVER_GUILD_ID), {
-      body: toRegisterForTest,
+      body: toRegisterForTest.map((command) => command),
     }));
   }
   void (await dbConnection);
