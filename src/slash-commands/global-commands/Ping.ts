@@ -1,6 +1,6 @@
 import { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { SlashCommand } from './SlashCommand';
+import { GlobalSlashCommand } from '../SlashCommand';
 
 const command = 'ping';
 const commandRegistrationData = new SlashCommandBuilder()
@@ -8,7 +8,7 @@ const commandRegistrationData = new SlashCommandBuilder()
   .setDescription('Replies with "pong" if bot is active')
   .toJSON();
 
-const PingCommand: SlashCommand = {
+const PingCommand: GlobalSlashCommand = {
   command,
   commandRegistrationData,
 

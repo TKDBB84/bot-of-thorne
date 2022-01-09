@@ -1,9 +1,9 @@
 import { CommandInteraction, MessageAttachment, MessageEmbed } from 'discord.js';
-import { SlashCommand } from './SlashCommand';
+import { GuildSlashCommand } from '../SlashCommand';
 import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders';
-import { CoTAPIId, GuildIds } from '../consts';
+import { CoTAPIId } from '../../consts';
 import { getRepository } from 'typeorm';
-import { SbUser, FFXIVChar } from '../entities';
+import { SbUser, FFXIVChar } from '../../entities';
 import CardCreator from 'xiv-character-cards';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
@@ -42,11 +42,11 @@ const replyWithDaysEmbed: (char: FFXIVChar, interaction: CommandInteraction) => 
 ) => {
   const numDays = getNumberOFDays(char);
   const embed = new MessageEmbed()
-    .setAuthor(
-      'Crowne of Thorne Member',
-      'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
-      'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
-    )
+    .setAuthor({
+      name: 'Crowne of Thorne Member',
+      iconURL: 'https://cdn.discordapp.com/icons/324682549206974473/4085926e1a87a4b85a60709a952c1f18.png?size=128',
+      url: 'https://na.finalfantasyxiv.com/lodestone/freecompany/9229001536389012456/',
+    })
     .setTitle(char.name)
     .addFields({ name: 'Time In FC', value: `${numDays} days` });
 
@@ -70,18 +70,13 @@ const replyWithDaysEmbed: (char: FFXIVChar, interaction: CommandInteraction) => 
   await interaction.reply({ embeds: [embed] });
 };
 
-const DaysCommand: SlashCommand = {
+const DaysCommand: GuildSlashCommand = {
   command: 'days',
   commandRegistrationData,
 
-  async exec(interaction: CommandInteraction): Promise<void> {
+  async exec(interaction): Promise<void> {
     const { XIV_API_TOKEN } = process.env;
-    if (
-      !interaction.inGuild() ||
-      (interaction.guildId !== GuildIds.COT_GUILD_ID && interaction.guildId !== GuildIds.SASNERS_TEST_SERVER_GUILD_ID)
-    ) {
-      return;
-    }
+
     const sbUserRepo = getRepository(SbUser);
     const characterRepo = getRepository(FFXIVChar);
 

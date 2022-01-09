@@ -1,3 +1,6 @@
+import { SlashCommand } from './slash-commands';
+import type { Interaction } from 'discord.js';
+
 export const enum GuildIds {
   COT_GUILD_ID = '324682549206974473',
   GAMEZZZ_GUILD_ID = '177596952836440065',
@@ -92,3 +95,14 @@ export const affirmativeResponses = ['yes', 'y', 'yup', 'sure', 'ye', 'yeah', 's
 export const noop: () => void = () => {
   // do nothing
 };
+
+export const matchInteraction: (interaction: Interaction) => (command: SlashCommand) => boolean =
+  (interaction) => (command) =>
+    interaction.isCommand() && command.command.trim().toLowerCase() === interaction.commandName.trim().toLowerCase();
+
+export const CRON_SCHEDULE = {
+  TWICE_DAILY: '0 15 8,20 * * *',
+  DAILY: '0 0 20 * * *',
+  AFTER_TWICE_DAILY: '0 30 8,20 * * *',
+  EVERY_THREE_HOURS: '0 */3 * * *'
+}

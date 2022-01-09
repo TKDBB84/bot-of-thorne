@@ -1,8 +1,10 @@
-import DaysCommand from './Days';
-import PingCommand from './Ping';
-import { SlashCommand } from './SlashCommand';
+import cotCommands from './cot-commands';
+import globalCommands from './global-commands';
+import testServerCommands from './test-server-commands';
 
-export default [DaysCommand, PingCommand];
-export const commandsDataForGlobal: SlashCommand[] = [PingCommand];
-export const commandsDataForTesting: SlashCommand[] = [DaysCommand];
-export const commandsDataForCoT: SlashCommand[] = [];
+export type { SlashCommand, GuildSlashCommand, GlobalSlashCommand } from './SlashCommand';
+export { default as commandsForGlobal } from './global-commands';
+export { default as commandsForCoT } from './cot-commands';
+export { default as commandsForTesting } from './test-server-commands';
+
+export default [...testServerCommands, ...cotCommands, ...globalCommands];
