@@ -1,5 +1,5 @@
 import { Column, Entity, getManager, ManyToOne, MoreThanOrEqual, PrimaryGeneratedColumn } from 'typeorm';
-import SbUser from './SbUser';
+import SbUser from './SbUser.js';
 
 @Entity()
 export default class Event {

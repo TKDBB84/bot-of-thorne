@@ -1,4 +1,4 @@
-import { SlashCommand } from './slash-commands';
+import type { SlashCommand } from './slash-commands';
 import type { Interaction } from 'discord.js';
 
 export const enum GuildIds {

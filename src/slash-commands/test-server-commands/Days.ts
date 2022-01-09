@@ -1,9 +1,9 @@
 import { CommandInteraction, MessageAttachment, MessageEmbed } from 'discord.js';
-import { GuildSlashCommand } from '../SlashCommand';
+import { GuildSlashCommand } from '../SlashCommand.js';
 import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders';
-import { CoTAPIId } from '../../consts';
+import { CoTAPIId } from '../../consts.js';
 import { getRepository } from 'typeorm';
-import { SbUser, FFXIVChar } from '../../entities';
+import { SbUser, FFXIVChar } from '../../entities/index.js';
 import CardCreator from 'xiv-character-cards';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';

@@ -1,5 +1,5 @@
 // import DaysCommand from './Days';
-import { GuildSlashCommand } from '../SlashCommand';
+import type { GuildSlashCommand } from '../SlashCommand.js';
 
 const cotCommands: GuildSlashCommand[] = [];
 

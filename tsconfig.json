@@ -4,7 +4,7 @@
       "ES2021",
       "dom"
     ],
-    "module": "commonjs",
+    "module": "ES2020",
     "target": "ES2021",
     "strictNullChecks": true,
     "moduleResolution": "node",

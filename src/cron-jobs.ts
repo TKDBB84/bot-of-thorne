@@ -1,6 +1,6 @@
 import { Connection } from 'typeorm';
-import { CRON_SCHEDULE } from './consts';
-import { COTMember } from './entities';
+import { CRON_SCHEDULE } from './consts.js';
+import { COTMember } from './entities/index.js';
 import axios from 'axios';
 import pThrottle from 'p-throttle';
 

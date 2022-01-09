@@ -3,10 +3,10 @@ import { Client, Intents, Interaction } from 'discord.js';
 import { Connection, createConnection } from 'typeorm';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-import { GuildIds, noop, matchInteraction } from './consts';
-import { commandsForGlobal, commandsForCoT, commandsForTesting, SlashCommand } from './slash-commands';
+import { GuildIds, noop, matchInteraction } from './consts.js';
+import { commandsForGlobal, commandsForCoT, commandsForTesting, SlashCommand } from './slash-commands/index.js';
 import { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
-import cronJobs from './cron-jobs';
+import cronJobs from './cron-jobs.js';
 import nodeCron from 'node-cron';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;

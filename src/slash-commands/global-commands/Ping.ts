@@ -1,6 +1,6 @@
-import { CommandInteraction } from 'discord.js';
+import type { CommandInteraction } from 'discord.js';
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { GlobalSlashCommand } from '../SlashCommand';
+import type { GlobalSlashCommand } from '../SlashCommand.js';
 
 const command = 'ping';
 const commandRegistrationData = new SlashCommandBuilder()

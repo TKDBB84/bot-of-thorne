@@ -1,10 +1,10 @@
-import cotCommands from './cot-commands';
-import globalCommands from './global-commands';
-import testServerCommands from './test-server-commands';
+import cotCommands from './cot-commands/index.js';
+import globalCommands from './global-commands/index.js';
+import testServerCommands from './test-server-commands/index.js';
 
-export type { SlashCommand, GuildSlashCommand, GlobalSlashCommand } from './SlashCommand';
-export { default as commandsForGlobal } from './global-commands';
-export { default as commandsForCoT } from './cot-commands';
-export { default as commandsForTesting } from './test-server-commands';
+export type { SlashCommand, GuildSlashCommand, GlobalSlashCommand } from './SlashCommand.js';
+export { default as commandsForGlobal } from './global-commands/index.js';
+export { default as commandsForCoT } from './cot-commands/index.js';
+export { default as commandsForTesting } from './test-server-commands/index.js';
 
 export default [...testServerCommands, ...cotCommands, ...globalCommands];

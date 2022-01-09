@@ -1,9 +1,9 @@
 import { Column, Entity, getManager, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { CotRanks } from '../consts';
-import AbsentRequest from './AbsentRequest';
-import FFXIVChar from './FFXIVChar';
-import PromotionRequest from './PromotionRequest';
-import SbUser from './SbUser';
+import { CotRanks } from '../consts.js';
+import AbsentRequest from './AbsentRequest.js';
+import FFXIVChar from './FFXIVChar.js';
+import PromotionRequest from './PromotionRequest.js';
+import SbUser from './SbUser.js';
 
 @Entity()
 export default class COTMember {

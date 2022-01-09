@@ -5,6 +5,7 @@
     "node": "^16.1",
     "npm": "^7"
   },
+  "type": "module",
   "dependencies": {
     "@discordjs/builders": "^0.11.0",
     "@discordjs/rest": "^0.2.0-canary.0",
@@ -24,26 +25,17 @@
     "xiv-character-cards": "^1.4.1"
   },
   "description": "Crowne of Thrones Management Bot",
-  "main": "index.js",
+  "exports": "./index.js",
   "devDependencies": {
-    "@babel/core": "^7.16.7",
-    "@babel/plugin-proposal-class-properties": "^7.16.7",
-    "@babel/plugin-proposal-decorators": "^7.16.7",
-    "@babel/plugin-proposal-private-property-in-object": "^7.16.7",
-    "@babel/preset-env": "^7.16.7",
-    "@babel/preset-typescript": "^7.16.7",
-    "@types/jest": "^27.4.0",
     "@types/node": "^17.0.8",
     "@types/node-cron": "^3.0.1",
     "@types/node-fetch": "^2.5.12",
     "@typescript-eslint/eslint-plugin": "^5.9.0",
-    "babel-jest": "^27.4.6",
     "discord-api-types": "^0.26.0",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-jsdoc": "^37.5.1",
     "eslint-plugin-prefer-arrow": "^1.2.3",
-    "jest": "^27.4.7",
     "prettier": "^2.5.1",
     "ts-node": "^10.4.0"
   },
@@ -51,8 +43,7 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint -c .eslintrc.json --ext .ts src",
-    "lint:fix": "eslint --fix -c .eslintrc.json --ext .ts src",
-    "test": "node --experimental-vm-modules node_modules/.bin/jest"
+    "lint:fix": "eslint --fix -c .eslintrc.json --ext .ts src"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import COTMember from './COTMember';
+import COTMember from './COTMember.js';
 
 @Entity()
 export default class AbsentRequest {
