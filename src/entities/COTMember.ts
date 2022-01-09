@@ -76,10 +76,10 @@ export default class COTMember {
   })
   public rank!: CotRanks;
 
-  @Column()
+  @Column('datetime')
   public firstSeenDiscord!: Date;
 
-  @Column()
+  @Column('datetime')
   public lastPromotion!: Date;
 
   @OneToMany(() => PromotionRequest, (promotionRequest: PromotionRequest) => promotionRequest.CotMember)

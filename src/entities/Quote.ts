@@ -6,19 +6,19 @@ export default class Quote {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @Column()
+  @Column('string')
   public guildId!: string;
 
-  @Column()
+  @Column('string')
   public channelId!: string;
 
-  @Column()
+  @Column('string')
   public messageId!: string;
 
   @CreateDateColumn()
   public created!: Date;
 
-  @Column()
+  @Column('string')
   public quoteText!: string;
 
   @ManyToOne(() => SbUser, (user) => user.quotes, { eager: true })

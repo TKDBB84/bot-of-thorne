@@ -4,10 +4,10 @@ import Quote from './Quote';
 
 @Entity()
 export default class SbUser {
-  @PrimaryColumn()
+  @PrimaryColumn('string')
   public discordUserId!: string;
 
-  @Column()
+  @Column('string')
   public timezone!: string;
 
   @OneToMany(() => Quote, (quote) => quote.user)

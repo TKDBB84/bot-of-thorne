@@ -1,30 +1,4 @@
-const mockedSbUserRepo = jest.fn(() => ({
-  findOne: jest.fn(),
-  save: jest.fn(),
-}));
-const mockedCharRepo = jest.fn(() => ({
-  findOne: jest.fn(),
-  createQueryBuilder: {
-    where: {
-      getOne: jest.fn(),
-    },
-  },
-  create: jest.fn(),
-  save: jest.fn(),
-}));
 jest.mock('xiv-character-cards')
-jest.mock('typeorm', () => ({
-  getRepository: jest.fn((repoType) => {
-    switch (repoType.name) {
-      case 'SbUser':
-        return mockedSbUserRepo;
-      case 'FFXIVChar':
-        return mockedCharRepo;
-      default:
-        throw new Error('Undefined Class Call');
-    }
-  }),
-}));
 import { CommandInteraction } from 'discord.js';
 
 import DaysCommand from '../../src/slash-commands/test-server-commands/Days';

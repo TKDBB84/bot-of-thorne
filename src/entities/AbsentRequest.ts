@@ -9,10 +9,10 @@ export default class AbsentRequest {
   @CreateDateColumn()
   public requested!: Date;
 
-  @Column()
+  @Column('date')
   public startDate!: Date;
 
-  @Column()
+  @Column('date')
   public endDate!: Date;
 
   @ManyToOne(() => COTMember, (cotMember: COTMember) => cotMember.absences, { eager: true })

@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
     "lib": [
-      "es5",
-      "es6",
-      "es2019",
+      "ES2021",
       "dom"
     ],
     "module": "commonjs",
-    "target": "es2019",
+    "target": "ES2021",
     "strictNullChecks": true,
     "moduleResolution": "node",
     "declaration": false,

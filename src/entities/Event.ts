@@ -30,16 +30,16 @@ export default class Event {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @Column()
+  @Column('string')
   public guildId!: string;
 
-  @Column()
+  @Column('string')
   public eventName!: string;
 
   @ManyToOne(() => SbUser, (user) => user.events, { eager: true })
   public user!: SbUser;
 
-  @Column()
+  @Column('datetime')
   public eventTime!: Date;
   //
   // @Column({

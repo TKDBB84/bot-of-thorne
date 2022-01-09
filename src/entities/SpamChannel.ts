@@ -2,12 +2,12 @@ import { Column, Entity, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export default class SpamChannel {
-  @PrimaryColumn()
+  @PrimaryColumn('string')
   public guildId!: string;
 
-  @Column()
+  @Column('string')
   public channelId!: string;
 
-  @Column()
+  @Column('string')
   public timezone!: string;
 }

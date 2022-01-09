@@ -6,16 +6,16 @@ export default class FFXIVChar {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @Column()
+  @Column('integer')
   public apiId!: number;
 
-  @Column({ charset: 'utf8', collation: 'utf8_general_ci' })
+  @Column({ charset: 'utf8', collation: 'utf8_general_ci', type: 'string' })
   public name!: string;
 
-  @Column()
+  @Column('datetime')
   public firstSeenApi!: Date;
 
-  @Column()
+  @Column('datetime')
   public lastSeenApi!: Date;
 
   @OneToOne(() => SbUser, { eager: true, nullable: true })
