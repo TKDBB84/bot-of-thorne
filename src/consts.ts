@@ -104,5 +104,5 @@ export const CRON_SCHEDULE = {
   TWICE_DAILY: '0 15 8,20 * * *',
   DAILY: '0 0 20 * * *',
   AFTER_TWICE_DAILY: '0 30 8,20 * * *',
-  EVERY_THREE_HOURS: '0 */3 * * *'
-}
+  EVERY_THREE_HOURS: '0 */3 * * *',
+};

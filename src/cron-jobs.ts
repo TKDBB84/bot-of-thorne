@@ -23,9 +23,9 @@ const prepareCharacterCards: CronJob = {
     const cotMembers = await connection.getRepository<COTMember>(COTMember).find();
     const allThrottled: Promise<unknown>[] = [];
     for (let i = 0, iMax = cotMembers.length; i < iMax; i++) {
-      const { apiId } = cotMembers[i]?.character;
-      const throttledPromise = throttledGenerateCard(apiId);
-      allThrottled.push(throttledPromise);
+      if (cotMembers[i] && cotMembers[i].character && cotMembers[i].character.apiId) {
+        allThrottled.push(throttledGenerateCard(cotMembers[i].character.apiId));
+      }
     }
     await Promise.all(allThrottled);
   },
