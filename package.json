@@ -16,7 +16,7 @@
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.41",
     "typescript": "^4.5.4",
-    "winston": "^3.3.3",
+    "winston": "^3.3.4",
     "winston-discordjs": "^3.0.0",
     "xiv-character-cards": "^1.4.1"
   },
