@@ -38,7 +38,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "jest": "^27.5.1",
     "prettier": "^2.5.1",
-    "ts-node": "^10.5.0"
+    "ts-node": "^10.6.0"
   },
   "scripts": {
     "build": "tsc",
