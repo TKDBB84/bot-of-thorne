@@ -3,9 +3,13 @@ import { Client, Intents, Interaction } from 'discord.js';
 import { Connection, createConnection } from 'typeorm';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
-import { GuildIds, noop } from './consts';
-import allCommands, { commandsDataForGlobal, commandsDataForCoT, commandsDataForTesting } from './slash-commands';
-import { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
+import { GuildIds, noop } from './consts.js';
+import allCommands, {
+  commandsDataForGlobal,
+  commandsDataForCoT,
+  commandsDataForTesting,
+} from './slash-commands/index.js';
+import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {

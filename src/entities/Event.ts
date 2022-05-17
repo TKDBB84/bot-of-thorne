@@ -1,5 +1,5 @@
-import { Column, Entity, getManager, ManyToOne, MoreThanOrEqual, PrimaryGeneratedColumn } from 'typeorm';
-import SbUser from './SbUser';
+import { Column, Entity, getManager, ManyToOne, MoreThanOrEqual, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import SbUser from './SbUser.js';
 
 @Entity()
 export default class Event {
@@ -13,7 +13,7 @@ export default class Event {
     });
   }
 
-  public static async findByName(name: string, guildId: string): Promise<Event | undefined> {
+  public static async findByName(name: string, guildId: string): Promise<Event | null> {
     const FOUR_HOURS_AGO = new Date();
     FOUR_HOURS_AGO.setTime(new Date().getTime() - 4 * (60 * 60 * 1000));
     const eventRepo = getManager().getRepository<Event>(Event);
@@ -37,7 +37,7 @@ export default class Event {
   public eventName!: string;
 
   @ManyToOne(() => SbUser, (user) => user.events, { eager: true })
-  public user!: SbUser;
+  public user!: Relation<SbUser>;
 
   @Column()
   public eventTime!: Date;

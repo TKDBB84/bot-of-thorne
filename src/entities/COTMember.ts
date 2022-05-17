@@ -1,9 +1,9 @@
-import { Column, Entity, getManager, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { CotRanks } from '../consts';
-import AbsentRequest from './AbsentRequest';
-import FFXIVChar from './FFXIVChar';
-import PromotionRequest from './PromotionRequest';
-import SbUser from './SbUser';
+import { Column, Entity, getManager, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { CotRanks } from '../consts.js';
+import AbsentRequest from './AbsentRequest.js';
+import FFXIVChar from './FFXIVChar.js';
+import PromotionRequest from './PromotionRequest.js';
+import SbUser from './SbUser.js';
 
 @Entity()
 export default class COTMember {
@@ -16,7 +16,7 @@ export default class COTMember {
     const cotMemberRepo = getManager().getRepository(COTMember);
     const sbUserRepo = getManager().getRepository(SbUser);
 
-    let sbUser = await sbUserRepo.findOne(discordUserId);
+    let sbUser = await sbUserRepo.findOne({ where: { discordUserId } });
     if (!sbUser) {
       sbUser = new SbUser();
       sbUser.discordUserId = discordUserId;
@@ -83,14 +83,14 @@ export default class COTMember {
   public lastPromotion!: Date;
 
   @OneToMany(() => PromotionRequest, (promotionRequest: PromotionRequest) => promotionRequest.CotMember)
-  public promotions!: PromotionRequest[];
+  public promotions!: Relation<PromotionRequest[]>;
 
   @OneToMany(() => AbsentRequest, (absentRequest: AbsentRequest) => absentRequest.CotMember)
-  public absences!: AbsentRequest[];
+  public absences!: Relation<AbsentRequest[]>;
 
   @OneToOne(() => FFXIVChar, { eager: true })
   @JoinColumn()
-  public character!: FFXIVChar;
+  public character!: Relation<FFXIVChar>;
 
   public async promote(): Promise<COTMember> {
     let newRank;
@@ -111,7 +111,7 @@ export default class COTMember {
     }
     const lastPromotion = new Date();
     await getManager().getRepository(COTMember).update(this.id, { lastPromotion, rank: newRank });
-    const updatedMember = await getManager().getRepository(COTMember).findOne(this.id);
+    const updatedMember = await getManager().getRepository(COTMember).findOne({ where: { id: this.id }});
     if (!updatedMember) {
       throw new Error('same member not found?');
     }

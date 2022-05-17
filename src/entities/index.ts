@@ -1,10 +1,10 @@
-import AbsentRequest from './AbsentRequest';
-import COTMember from './COTMember';
-import Event from './Event';
-import FFXIVChar from './FFXIVChar';
-import PromotionRequest from './PromotionRequest';
-import Quote from './Quote';
-import SbUser from './SbUser';
-import SpamChannel from './SpamChannel';
+import AbsentRequest from './AbsentRequest.js';
+import COTMember from './COTMember.js';
+import Event from './Event.js';
+import FFXIVChar from './FFXIVChar.js';
+import PromotionRequest from './PromotionRequest.js';
+import Quote from './Quote.js';
+import SbUser from './SbUser.js';
+import SpamChannel from './SpamChannel.js';
 
 export { AbsentRequest, COTMember, Event, FFXIVChar, PromotionRequest, Quote, SbUser, SpamChannel };

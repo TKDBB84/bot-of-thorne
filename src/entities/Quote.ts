@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import SbUser from './SbUser';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import SbUser from './SbUser.js';
 
 @Entity()
 export default class Quote {
@@ -22,5 +22,5 @@ export default class Quote {
   public quoteText!: string;
 
   @ManyToOne(() => SbUser, (user) => user.quotes, { eager: true })
-  public user!: SbUser;
+  public user!: Relation<SbUser>;
 }

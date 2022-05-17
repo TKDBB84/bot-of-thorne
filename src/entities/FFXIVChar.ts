@@ -1,5 +1,5 @@
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import SbUser from './SbUser';
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import SbUser from './SbUser.js';
 
 @Entity()
 export default class FFXIVChar {
@@ -20,5 +20,5 @@ export default class FFXIVChar {
 
   @OneToOne(() => SbUser, { eager: true, nullable: true })
   @JoinColumn()
-  public user!: SbUser;
+  public user!: Relation<SbUser>;
 }

@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
 import { CotRanks } from '../consts';
 import COTMember from './COTMember';
 
@@ -18,5 +18,5 @@ export default class PromotionRequest {
   public toRank!: CotRanks;
 
   @ManyToOne(() => COTMember, (cotMember: COTMember) => cotMember.promotions, { eager: true })
-  public CotMember!: COTMember;
+  public CotMember!: Relation<COTMember>;
 }

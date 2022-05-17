@@ -1,6 +1,6 @@
-import DaysCommand from './Days';
-import PingCommand from './Ping';
-import { SlashCommand } from './SlashCommand';
+import DaysCommand from './Days.js';
+import PingCommand from './Ping.js';
+import type { SlashCommand } from './SlashCommand';
 
 export default [DaysCommand, PingCommand];
 export const commandsDataForGlobal: SlashCommand[] = [PingCommand];

@@ -1,5 +1,5 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import COTMember from './COTMember';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import COTMember from './COTMember.js';
 
 @Entity()
 export default class AbsentRequest {
@@ -16,5 +16,5 @@ export default class AbsentRequest {
   public endDate!: Date;
 
   @ManyToOne(() => COTMember, (cotMember: COTMember) => cotMember.absences, { eager: true })
-  public CotMember!: COTMember;
+  public CotMember!: Relation<COTMember>;
 }

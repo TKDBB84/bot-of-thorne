@@ -1,9 +1,9 @@
-import { CommandInteraction } from 'discord.js';
-import { SlashCommand } from './SlashCommand';
+import type { CommandInteraction } from 'discord.js';
+import type { SlashCommand } from './SlashCommand.js';
 import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders';
-import { CoTAPIId, GuildIds } from '../consts';
+import { CoTAPIId, GuildIds } from '../consts.js';
 import { getRepository } from 'typeorm';
-import { SbUser, FFXIVChar } from '../entities';
+import { SbUser, FFXIVChar } from '../entities/index.js';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
 
@@ -34,7 +34,7 @@ const DaysCommand: SlashCommand = {
   commandRegistrationData,
 
   async exec(interaction: CommandInteraction): Promise<void> {
-    const { XIV_API_TOKEN } = process.env;
+    const { XIV_API_TOKEN = '' } = process.env;
     if (
       !interaction.inGuild() ||
       (interaction.guildId !== GuildIds.COT_GUILD_ID && interaction.guildId !== GuildIds.SASNERS_TEST_SERVER_GUILD_ID)
@@ -47,7 +47,7 @@ const DaysCommand: SlashCommand = {
     const discordId = interaction.member.user.id;
     const charName = interaction.options.getString('character_name', false);
     console.log({ charNameArg: charName });
-    let sbUser = await sbUserRepo.findOne(discordId);
+    let sbUser = await sbUserRepo.findOne({ where: { discordUserId: discordId } });
     if (!sbUser) {
       sbUser = new SbUser();
       sbUser.discordUserId = discordId;

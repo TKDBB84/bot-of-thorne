@@ -1,6 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
-import Event from './Event';
-import Quote from './Quote';
+import { Column, Entity, OneToMany, PrimaryColumn, Relation } from 'typeorm';
+import Event from './Event.js';
+import Quote from './Quote.js';
 
 @Entity()
 export default class SbUser {
@@ -11,8 +11,8 @@ export default class SbUser {
   public timezone!: string;
 
   @OneToMany(() => Quote, (quote) => quote.user)
-  public quotes!: Quote[];
+  public quotes!: Relation<Quote[]>;
 
   @OneToMany(() => Event, (event) => event.user)
-  public events!: Event[];
+  public events!: Relation<Event[]>;
 }

@@ -1,36 +1,41 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "lib": [
-      "es5",
-      "es6",
-      "es2019",
-      "dom"
-    ],
-    "module": "commonjs",
-    "target": "es2019",
-    "strictNullChecks": true,
-    "moduleResolution": "node",
-    "declaration": false,
-    "strict": true,
-    "sourceMap": true,
-    "noImplicitAny": true,
-    "alwaysStrict": true,
-    "outDir": "dist",
+    "allowJs": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "checkJs": true,
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
     "esModuleInterop": true,
-    "typeRoots": [
-      "./node_modules/@types"
+    "exactOptionalPropertyTypes": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "importsNotUsedAsValues": "error",
+    "lib": [
+      "es2021"
     ],
-    "baseUrl": ".",
-    "paths": {
-      "xiv-character-cards": ["types/xiv-character-cards.d.ts"],
-      "@xivapi/js": ["types/xivapi-js.d.ts"],
-    }
+    "module": "es2022",
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "outDir": "dist",
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "target": "es2021"
   },
+  "display": "Node 16 + ESM + Strictest",
   "exclude": [
     "node_modules",
     "tests",
-    "jest.config.ts"
+    "jest.config.ts",
+    "babel.config.js",
+    "coverage",
+    "dist",
   ]
 }
