@@ -24,7 +24,7 @@
   "main": "index.js",
   "devDependencies": {
     "@babel/core": "^7.18.0",
-    "@babel/preset-env": "^7.17.12",
+    "@babel/preset-env": "^7.18.0",
     "@babel/preset-typescript": "^7.17.12",
     "@tsconfig/esm": "^1.0.0",
     "@types/jest": "^27.5.1",
