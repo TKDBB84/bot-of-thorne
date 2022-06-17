@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { Client, Intents, Interaction } from 'discord.js';
-import { Connection, createConnection } from 'typeorm';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { GuildIds, noop } from './consts.js';
@@ -11,39 +10,14 @@ import allCommands, {
 } from './slash-commands/index.js';
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
 
-const { DISCORD_TOKEN, DISCORD_CLIENT_ID, NODE_ENV = 'development' } = process.env;
+const { DISCORD_TOKEN, DISCORD_CLIENT_ID } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
   throw new Error('MISSING REQUIRED ENV VARIABLES');
 }
 
-const intents = new Intents();
-intents.add(
-  Intents.FLAGS.GUILDS,
-  Intents.FLAGS.GUILD_MEMBERS,
-  Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
-  Intents.FLAGS.GUILD_PRESENCES,
-  Intents.FLAGS.GUILD_MESSAGES,
-  Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-  Intents.FLAGS.DIRECT_MESSAGES,
-  Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
-);
+const allIntents = Object.values(Intents.FLAGS);
+const intents = new Intents(...allIntents);
 
-let dbConnection: Promise<Connection>;
-if (NODE_ENV !== 'production') {
-  dbConnection = createConnection({
-    database: 'sassybot',
-    entities: ['dist/entities/**/*.js', 'src/entities/**/*.ts'],
-    host: 'localhost',
-    logging: true,
-    password: 'sassy123',
-    port: 3306,
-    synchronize: false,
-    type: 'mariadb',
-    username: 'sassybot',
-  });
-} else {
-  dbConnection = createConnection();
-}
 
 const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = {
   global: ['ping'],
@@ -103,7 +77,6 @@ const start = async () => {
       body: toRegisterForTest.map((command) => command),
     }));
   }
-  void (await dbConnection);
   void (await discordClient.login(DISCORD_TOKEN));
 };
 

@@ -2,7 +2,7 @@ import type { CommandInteraction } from 'discord.js';
 import type { SlashCommand } from './SlashCommand.js';
 import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts.js';
-import { getRepository } from 'typeorm';
+import getDataSource from '../data-source.js';
 import { SbUser, FFXIVChar } from '../entities/index.js';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
@@ -41,8 +41,9 @@ const DaysCommand: SlashCommand = {
     ) {
       return;
     }
-    const sbUserRepo = getRepository(SbUser);
-    const characterRepo = getRepository(FFXIVChar);
+    const dataSource = await getDataSource()
+    const sbUserRepo = dataSource.getRepository(SbUser);
+    const characterRepo = dataSource.getRepository(FFXIVChar);
 
     const discordId = interaction.member.user.id;
     const charName = interaction.options.getString('character_name', false);

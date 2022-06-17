@@ -1,4 +1,5 @@
-import { Column, Entity, getManager, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import getDataSource from '../data-source.js';
 import { CotRanks } from '../consts.js';
 import AbsentRequest from './AbsentRequest.js';
 import FFXIVChar from './FFXIVChar.js';
@@ -12,9 +13,10 @@ export default class COTMember {
     discordUserId: string,
     rank: CotRanks = CotRanks.NEW,
   ): Promise<COTMember> {
-    const cotPlayerRepo = getManager().getRepository(FFXIVChar);
-    const cotMemberRepo = getManager().getRepository(COTMember);
-    const sbUserRepo = getManager().getRepository(SbUser);
+    const dataSource = await getDataSource();
+    const cotPlayerRepo = dataSource.getRepository(FFXIVChar);
+    const cotMemberRepo = dataSource.getRepository(COTMember);
+    const sbUserRepo = dataSource.getRepository(SbUser);
 
     let sbUser = await sbUserRepo.findOne({ where: { discordUserId } });
     if (!sbUser) {
@@ -110,8 +112,9 @@ export default class COTMember {
         break;
     }
     const lastPromotion = new Date();
-    await getManager().getRepository(COTMember).update(this.id, { lastPromotion, rank: newRank });
-    const updatedMember = await getManager().getRepository(COTMember).findOne({ where: { id: this.id }});
+    const dataSource = await getDataSource();
+    await dataSource.getRepository(COTMember).update(this.id, { lastPromotion, rank: newRank });
+    const updatedMember = await dataSource.getRepository(COTMember).findOne({ where: { id: this.id } });
     if (!updatedMember) {
       throw new Error('same member not found?');
     }
