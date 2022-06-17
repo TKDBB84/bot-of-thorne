@@ -18,7 +18,6 @@ if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
 const allIntents = Object.values(Intents.FLAGS);
 const intents = new Intents(...allIntents);
 
-
 const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = {
   global: ['ping'],
   test: ['days'],

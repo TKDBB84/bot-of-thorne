@@ -41,7 +41,7 @@ const DaysCommand: SlashCommand = {
     ) {
       return;
     }
-    const dataSource = await getDataSource()
+    const dataSource = await getDataSource();
     const sbUserRepo = dataSource.getRepository(SbUser);
     const characterRepo = dataSource.getRepository(FFXIVChar);
 

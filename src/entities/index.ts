@@ -9,13 +9,4 @@ import SpamChannel from './SpamChannel.js';
 
 export { AbsentRequest, COTMember, Event, FFXIVChar, PromotionRequest, Quote, SbUser, SpamChannel };
 
-export const allEntities = [
-    AbsentRequest,
-    COTMember,
-    Event,
-    FFXIVChar,
-    PromotionRequest,
-    Quote,
-    SbUser,
-    SpamChannel,
-];
+export const allEntities = [AbsentRequest, COTMember, Event, FFXIVChar, PromotionRequest, Quote, SbUser, SpamChannel];
