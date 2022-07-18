@@ -11,7 +11,7 @@
     "@discordjs/rest": "^1.0.0",
     "@xivapi/js": "^0.4.1",
     "dayjs": "^1.11.3",
-    "discord.js": "^13.8.1",
+    "discord.js": "^13.9.0",
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
