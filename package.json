@@ -23,7 +23,7 @@
   "description": "Crowne of Thrones Management Bot",
   "main": "index.js",
   "devDependencies": {
-    "@babel/core": "^7.18.6",
+    "@babel/core": "^7.18.9",
     "@babel/preset-env": "^7.18.6",
     "@babel/preset-typescript": "^7.18.6",
     "@tsconfig/esm": "^1.0.1",
