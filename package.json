@@ -10,7 +10,7 @@
     "@discordjs/builders": "^0.12.0",
     "@discordjs/rest": "^1.0.0",
     "@xivapi/js": "^0.4.1",
-    "dayjs": "^1.11.3",
+    "dayjs": "^1.11.4",
     "discord.js": "^13.9.0",
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
