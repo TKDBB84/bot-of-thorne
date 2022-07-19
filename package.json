@@ -27,7 +27,7 @@
     "@babel/preset-env": "^7.18.9",
     "@babel/preset-typescript": "^7.18.6",
     "@tsconfig/esm": "^1.0.1",
-    "@types/jest": "^28.1.5",
+    "@types/jest": "^28.1.6",
     "@types/node": "^18.0.6",
     "@types/node-fetch": "^2.6.2",
     "@typescript-eslint/eslint-plugin": "^5.30.7",
