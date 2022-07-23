@@ -92,7 +92,7 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
 
 // register sassybot listeners
 const redisClient = new Redis();
-redisClient.subscribe('sassybot-events', (err) => {
+await redisClient.subscribe('sassybot-events', (err) => {
   if (err) {
     logger.error('error subscribing to reids', err);
     throw err;
@@ -100,13 +100,13 @@ redisClient.subscribe('sassybot-events', (err) => {
   logger.debug('Subscribed to Sassybot Events');
 });
 
-redisClient.on('message', (channel, message) => {
+redisClient.on('message', (channel: string, message: string) => {
   if (channel.toLowerCase() !== 'sassybot-events') {
     return;
   }
   let sentObject: SassybotEvent;
   try {
-    sentObject = JSON.parse(message);
+    sentObject = JSON.parse(message) as SassybotEvent;
   } catch (e: unknown) {
     logger.error('None JSON message From Sassybot', { message, error: e });
     return;

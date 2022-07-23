@@ -19,7 +19,7 @@ const SassybotDays = {
         daysInFc += 'in the FC ';
       }
       daysInFc += `for approximately ${numDays} days.`;
-      channel.send({
+      void channel.send({
         content: daysInFc,
         reply: { messageReference: messageId },
       });
