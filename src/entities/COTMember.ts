@@ -5,6 +5,7 @@ import AbsentRequest from './AbsentRequest.js';
 import FFXIVChar from './FFXIVChar.js';
 import PromotionRequest from './PromotionRequest.js';
 import SbUser from './SbUser.js';
+import logger from '../logger.js';
 
 @Entity()
 export default class COTMember {
@@ -55,7 +56,7 @@ export default class COTMember {
         try {
           cotMember = await cotMemberRepo.save(cotMember, { reload: true });
         } catch (error: unknown) {
-          console.error('error saving member', [error, foundMember, cotMember]);
+          logger.error('error saving member', { error, foundMember, cotMember });
           throw error;
         }
       }

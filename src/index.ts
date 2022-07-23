@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Client, Intents, Interaction } from 'discord.js';
+import { Client, GatewayIntentBits, IntentsBitField, Interaction, InteractionType } from 'discord.js';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { GuildIds, noop } from './consts.js';
@@ -8,16 +8,46 @@ import allCommands, {
   commandsDataForCoT,
   commandsDataForTesting,
 } from './slash-commands/index.js';
-import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
+import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import Redis from 'ioredis';
+import logger from './logger.js';
+import sassybotCommands from './sassybot-commands/index.js';
+
+type SassybotEvent = SassybotDaysEvent;
+type SassybotDaysEvent = {
+  eventName: 'daysRequest';
+  isOfficerQuery: boolean;
+  numDays: number;
+  charName: string;
+  authorId: string;
+  channelId: string;
+  messageId: string;
+};
 
 const { DISCORD_TOKEN, DISCORD_CLIENT_ID } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
   throw new Error('MISSING REQUIRED ENV VARIABLES');
 }
 
-const allIntents = Object.values(Intents.FLAGS);
-const intents = new Intents(...allIntents);
-
+const allIntents = new IntentsBitField([
+  GatewayIntentBits.Guilds,
+  GatewayIntentBits.GuildMembers,
+  GatewayIntentBits.GuildBans,
+  GatewayIntentBits.GuildEmojisAndStickers,
+  GatewayIntentBits.GuildIntegrations,
+  GatewayIntentBits.GuildWebhooks,
+  GatewayIntentBits.GuildInvites,
+  GatewayIntentBits.GuildVoiceStates,
+  GatewayIntentBits.GuildPresences,
+  GatewayIntentBits.GuildMessages,
+  GatewayIntentBits.GuildMessageReactions,
+  GatewayIntentBits.GuildMessageTyping,
+  GatewayIntentBits.DirectMessages,
+  GatewayIntentBits.DirectMessageReactions,
+  GatewayIntentBits.DirectMessageTyping,
+  GatewayIntentBits.MessageContent,
+  GatewayIntentBits.GuildScheduledEvents,
+]);
 const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = {
   global: ['ping'],
   test: ['days'],
@@ -45,9 +75,9 @@ commandsDataForCoT.forEach((slashCommand) => {
 });
 
 const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN);
-const discordClient = new Client({ intents });
+const discordClient = new Client({ intents: allIntents });
 discordClient.on('interactionCreate', async (interaction: Interaction) => {
-  if (!interaction.isCommand()) {
+  if (interaction.type !== InteractionType.ApplicationCommand) {
     return;
   }
 
@@ -57,6 +87,37 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
 
   if (command) {
     await command.exec(interaction);
+  }
+});
+
+// register sassybot listeners
+const redisClient = new Redis();
+redisClient.subscribe('sassybot-events', (err) => {
+  if (err) {
+    logger.error('error subscribing to reids', err);
+    throw err;
+  }
+  logger.debug('Subscribed to Sassybot Events');
+});
+
+redisClient.on('message', (channel, message) => {
+  if (channel.toLowerCase() !== 'sassybot-events') {
+    return;
+  }
+  let sentObject: SassybotEvent;
+  try {
+    sentObject = JSON.parse(message);
+  } catch (e: unknown) {
+    logger.error('None JSON message From Sassybot', { message, error: e });
+    return;
+  }
+  if (sentObject?.eventName) {
+    const matchingCommand = sassybotCommands.find(
+      (sassybotCommand) => sassybotCommand.eventName === sentObject.eventName,
+    );
+    if (matchingCommand) {
+      void matchingCommand.exec(discordClient, sentObject);
+    }
   }
 });
 
@@ -79,4 +140,9 @@ const start = async () => {
   void (await discordClient.login(DISCORD_TOKEN));
 };
 
-void start().then(noop).catch(console.error);
+void start()
+  .then(noop)
+  .catch((e) => {
+    logger.error('Error Starting Bot', e);
+    throw e;
+  });

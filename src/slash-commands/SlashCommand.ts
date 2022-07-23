@@ -1,5 +1,5 @@
 import type { CommandInteraction } from 'discord.js';
-import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types';
+import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
 
 export declare interface SlashCommand {
   readonly command: string;

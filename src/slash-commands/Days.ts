@@ -1,11 +1,11 @@
-import type { CommandInteraction } from 'discord.js';
+import { CommandInteraction, SlashCommandBuilder, SlashCommandStringOption } from 'discord.js';
 import type { SlashCommand } from './SlashCommand.js';
-import { SlashCommandBuilder, SlashCommandStringOption } from '@discordjs/builders';
 import { CoTAPIId, GuildIds } from '../consts.js';
 import getDataSource from '../data-source.js';
 import { SbUser, FFXIVChar } from '../entities/index.js';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
+import logger from '../logger.js';
 
 const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): number => {
   const firstSeen = dayjs(firstSeenApi);
@@ -46,8 +46,8 @@ const DaysCommand: SlashCommand = {
     const characterRepo = dataSource.getRepository(FFXIVChar);
 
     const discordId = interaction.member.user.id;
-    const charName = interaction.options.getString('character_name', false);
-    console.log({ charNameArg: charName });
+    const charName = interaction.options.get('character_name', false)?.value?.toString();
+    logger.debug('charNameArgument', charName);
     let sbUser = await sbUserRepo.findOne({ where: { discordUserId: discordId } });
     if (!sbUser) {
       sbUser = new SbUser();
@@ -83,7 +83,7 @@ const DaysCommand: SlashCommand = {
       .where('LOWER(name) = LOWER(:name)', { name: charName.trim().toLowerCase() })
       .getOne();
 
-    console.log({ foundChar: char });
+    logger.debug('foundChar', char);
     if (char && char.firstSeenApi) {
       const numDays = getNumberOFDays(char);
       await interaction.reply({
@@ -100,13 +100,13 @@ const DaysCommand: SlashCommand = {
     }
     if (!char || !char.apiId) {
       const { FreeCompanyMembers = [] } = xivClient.freecompany.get(CoTAPIId, { data: 'FCM' });
-      console.log({ searchResults: FreeCompanyMembers });
+      logger.debug('searchResults', FreeCompanyMembers);
       matchingMember = FreeCompanyMembers.find(
         (member) => member.Name.trim().toLowerCase() === charName.trim().toLowerCase(),
       );
     }
 
-    console.log({ matchingMember });
+    logger.debug('matchingMember', matchingMember);
     if (!matchingMember) {
       await interaction.reply({
         content: `Sorry I can't find a record of ${charName.trim()} in the FC through the lodestone.`,
@@ -119,7 +119,7 @@ const DaysCommand: SlashCommand = {
     char.apiId = +matchingMember.ID;
     char.name = matchingMember.Name.trim();
     char = await characterRepo.save(char, { reload: true });
-    console.log({ savedChar: char });
+    logger.debug('savedChar', char);
     await interaction.reply({
       content: `${char.name} has been in the FC for approximately less than 1 day`,
     });
