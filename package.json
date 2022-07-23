@@ -17,8 +17,7 @@
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.7",
     "winston": "^3.8.1",
-    "winston-console-format": "^1.0.8",
-    "xiv-character-cards": "^1.4.1"
+    "winston-console-format": "^1.0.8"
   },
   "description": "Crowne of Thrones Management Bot",
   "main": "index.js",
