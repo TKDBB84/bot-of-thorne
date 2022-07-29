@@ -10,7 +10,7 @@
     "@discordjs/rest": "^1.0.1",
     "@xivapi/js": "^0.4.1",
     "dayjs": "^1.11.4",
-    "discord.js": "^14.0.3",
+    "discord.js": "^14.1.1",
     "ioredis": "^5.2.2",
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
