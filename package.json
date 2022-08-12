@@ -9,7 +9,7 @@
   "dependencies": {
     "@discordjs/rest": "^1.0.1",
     "@xivapi/js": "^0.4.1",
-    "dayjs": "^1.11.4",
+    "dayjs": "^1.11.5",
     "discord.js": "^14.2.0",
     "ioredis": "^5.2.2",
     "moment": "^2.29.4",
