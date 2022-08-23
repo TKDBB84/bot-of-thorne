@@ -11,7 +11,7 @@
     "@xivapi/js": "^0.4.1",
     "dayjs": "^1.11.5",
     "discord.js": "^14.3.0",
-    "ioredis": "^5.2.2",
+    "ioredis": "^5.2.3",
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
