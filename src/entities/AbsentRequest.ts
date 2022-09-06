@@ -1,20 +1,20 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
-import COTMember from './COTMember.js';
+import Character from './Character.js';
 
-@Entity()
+@Entity({ database: 'cotbot', name: 'absent_requests' })
 export default class AbsentRequest {
-  @PrimaryGeneratedColumn()
-  public id!: number;
+  @PrimaryGeneratedColumn({ type: 'int' })
+  public id: number;
 
-  @CreateDateColumn()
-  public requested!: Date;
+  @CreateDateColumn({ type: 'timestamp', default: 'NOW()', nullable: false })
+  public date_requested: Date = new Date();
 
-  @Column()
-  public startDate!: Date;
+  @Column({ type: 'date', nullable: false })
+  public start_date: Date = new Date();
 
-  @Column()
-  public endDate!: Date;
+  @Column({ type: 'date', nullable: false })
+  public end_date: Date = new Date();
 
-  @ManyToOne(() => COTMember, (cotMember: COTMember) => cotMember.absences, { eager: true })
-  public CotMember!: Relation<COTMember>;
+  @ManyToOne(() => Character, (cotMember: Character) => cotMember.absences, { eager: true, nullable: false })
+  public character: Relation<Character>;
 }

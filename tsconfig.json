@@ -6,6 +6,7 @@
     "experimentalDecorators": true,
     "outDir": "dist",
     "sourceMap": true,
+    "strictPropertyInitialization": false
   },
   "exclude": [
     "node_modules",

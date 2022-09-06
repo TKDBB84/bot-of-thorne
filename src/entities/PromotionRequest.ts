@@ -1,22 +1,23 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
-import { CotRanks } from '../consts';
-import COTMember from './COTMember';
+import { CotRankTo } from '../consts';
+import Character from './Character.js';
 
-@Entity()
+@Entity({ database: 'cotbot', name: 'promotion_requests' })
 export default class PromotionRequest {
-  @PrimaryGeneratedColumn()
-  public id!: number;
+  @PrimaryGeneratedColumn({ type: 'int' })
+  public id: number;
 
-  @CreateDateColumn()
-  public requested!: Date;
+  @CreateDateColumn({ type: 'timestamp', default: 'NOW()', nullable: false })
+  public date_requested: Date = new Date();
 
   @Column({
-    default: CotRanks.MEMBER,
-    enum: CotRanks,
+    default: CotRankTo.MEMBER,
+    enum: CotRankTo,
     type: 'enum',
+    nullable: false,
   })
-  public toRank!: CotRanks;
+  public to_rank: CotRankTo = CotRankTo.MEMBER;
 
-  @ManyToOne(() => COTMember, (cotMember: COTMember) => cotMember.promotions, { eager: true })
-  public CotMember!: Relation<COTMember>;
+  @ManyToOne(() => Character, (character: Character) => character.promotions, { eager: true, nullable: false })
+  public character: Relation<Character>;
 }

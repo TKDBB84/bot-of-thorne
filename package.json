@@ -2,8 +2,8 @@
   "name": "bot-of-thrones",
   "version": "1.0.0",
   "engines": {
-    "node": ">=18.6 <19",
-    "npm": "^8.12.2"
+    "node": ">=18.8 <19",
+    "npm": ">=8 <9"
   },
   "type": "module",
   "dependencies": {

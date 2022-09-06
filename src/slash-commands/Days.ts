@@ -2,10 +2,11 @@ import { CommandInteraction, SlashCommandBuilder, SlashCommandStringOption } fro
 import type { SlashCommand } from './SlashCommand.js';
 import { CoTAPIId, GuildIds } from '../consts.js';
 import getDataSource from '../data-source.js';
-import { SbUser, FFXIVChar } from '../entities/index.js';
+import { User, Character } from '../entities/index.js';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
 import logger from '../logger.js';
+import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v10.js';
 
 const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): number => {
   const firstSeen = dayjs(firstSeenApi);
@@ -21,11 +22,21 @@ const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): num
   }
 };
 
+const dataSource = await getDataSource();
+const allCharacters = await dataSource.getRepository(Character).find();
+
 const commandRegistrationData = new SlashCommandBuilder()
   .setName('days')
   .setDescription("Returns the approximate number of days you've been in the FC")
   .addStringOption((option: SlashCommandStringOption) =>
-    option.setName('character_name').setDescription('Full FFXIV Character Name').setRequired(false),
+    option
+      .setName('character_name')
+      .setDescription('FFXIV Character')
+      .setAutocomplete(true)
+      .setChoices<APIApplicationCommandOptionChoice<string>[]>(
+        ...allCharacters.map((character) => ({ name: character.name, value: character.id })),
+      )
+      .setRequired(true),
   )
   .toJSON();
 
@@ -41,22 +52,29 @@ const DaysCommand: SlashCommand = {
     ) {
       return;
     }
-    const dataSource = await getDataSource();
-    const sbUserRepo = dataSource.getRepository(SbUser);
-    const characterRepo = dataSource.getRepository(FFXIVChar);
+    const sbUserRepo = dataSource.getRepository(User);
+    const characterRepo = dataSource.getRepository(Character);
 
     const discordId = interaction.member.user.id;
-    const charName = interaction.options.get('character_name', false)?.value?.toString();
-    logger.debug('charNameArgument', charName);
-    let sbUser = await sbUserRepo.findOne({ where: { discordUserId: discordId } });
-    if (!sbUser) {
-      sbUser = new SbUser();
-      sbUser.discordUserId = discordId;
-      await sbUserRepo.save(sbUser);
+    const characterOption = interaction.options.get('character_name');
+    if (!characterOption) {
+      return;
     }
-    if (!charName) {
+    const characterId = characterOption.value;
+    if (!characterId) {
+      return;
+    }
+
+    logger.debug('charNameArgument', characterId);
+    let sbUser = await sbUserRepo.findOne({ where: { id: discordId } });
+    if (!sbUser) {
+      const tmpUser = new User();
+      tmpUser.id = discordId;
+      sbUser = await sbUserRepo.save(tmpUser);
+    }
+    if (!characterOption) {
       // try using claimed character
-      const char = await characterRepo.findOne({ where: { user: { discordUserId: sbUser.discordUserId } } });
+      const char = await characterRepo.findOne({ where: { user: { id: sbUser.id } } });
       if (!char) {
         await interaction.reply({
           content:
@@ -80,7 +98,7 @@ const DaysCommand: SlashCommand = {
     let matchingMember: XivApiCharacterSearchResult | undefined;
     let char = await characterRepo
       .createQueryBuilder()
-      .where('LOWER(name) = LOWER(:name)', { name: charName.trim().toLowerCase() })
+      .where('LOWER(name) = LOWER(:name)', { name: characterOption.trim().toLowerCase() })
       .getOne();
 
     logger.debug('foundChar', char);
@@ -102,14 +120,14 @@ const DaysCommand: SlashCommand = {
       const { FreeCompanyMembers = [] } = xivClient.freecompany.get(CoTAPIId, { data: 'FCM' });
       logger.debug('searchResults', FreeCompanyMembers);
       matchingMember = FreeCompanyMembers.find(
-        (member) => member.Name.trim().toLowerCase() === charName.trim().toLowerCase(),
+        (member) => member.Name.trim().toLowerCase() === characterOption.trim().toLowerCase(),
       );
     }
 
     logger.debug('matchingMember', matchingMember);
     if (!matchingMember) {
       await interaction.reply({
-        content: `Sorry I can't find a record of ${charName.trim()} in the FC through the lodestone.`,
+        content: `Sorry I can't find a record of ${characterOption.trim()} in the FC through the lodestone.`,
       });
       return;
     }
