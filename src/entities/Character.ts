@@ -13,13 +13,13 @@ export default class Character {
   public apiId: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
-  public name: string = '';
+  public name = '';
 
   @Column({ type: 'varchar', length: 255, nullable: false, default: '' })
-  public avatar: string = '';
+  public avatar = '';
 
   @Column({ type: 'varchar', length: 255, nullable: false, default: '' })
-  public portrait: string = '';
+  public portrait = '';
 
   @Column({ type: 'varchar', length: 255, nullable: true, default: null })
   public free_company_id: string | null;

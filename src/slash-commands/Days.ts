@@ -110,9 +110,11 @@ const DaysCommand: SlashCommand = {
     }
 
     if (char && char.id) {
-      const { FreeCompany = null, Character = null } = xivClient.character.get(char.id.toString(), { data: 'FC' });
-      if (FreeCompany && FreeCompany.Name.trim().toLowerCase() === 'Crowne of Thorne' && Character) {
-        matchingMember = Character;
+      const { FreeCompany = null, Character: apiCharacter = null } = xivClient.character.get(char.id.toString(), {
+        data: 'FC',
+      });
+      if (FreeCompany && FreeCompany.Name.trim().toLowerCase() === 'Crowne of Thorne' && apiCharacter) {
+        matchingMember = apiCharacter;
       }
     }
     if (!char || !char.id) {

@@ -8,7 +8,7 @@ export default class User {
   public id: string;
 
   @Column({ type: 'varchar', length: 14, default: 'Etc/UTC', nullable: false })
-  public timezone: string = 'Etc/UTC';
+  public timezone = 'Etc/UTC';
 
   @Column({ type: 'timestamp', default: 'NOW()', nullable: false })
   public first_seen: Date = new Date();
