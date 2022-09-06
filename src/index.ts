@@ -12,6 +12,7 @@ import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v
 import Redis from 'ioredis';
 import logger from './logger.js';
 import sassybotCommands from './sassybot-commands/index.js';
+import { User } from './entities/index.js';
 
 type SassybotEvent = SassybotDaysEvent;
 type SassybotDaysEvent = {
@@ -88,6 +89,13 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
   if (command) {
     await command.exec(interaction);
   }
+});
+
+discordClient.on('guildMemberAdd', (member) => {
+  if (member.guild.id !== GuildIds.COT_GUILD_ID) {
+    return;
+  }
+  void User.touch(member.id);
 });
 
 // register sassybot listeners

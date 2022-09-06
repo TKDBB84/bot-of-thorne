@@ -1,15 +1,15 @@
 import { CommandInteraction, SlashCommandBuilder, SlashCommandStringOption } from 'discord.js';
 import type { SlashCommand } from './SlashCommand.js';
-import { CoTAPIId, GuildIds } from '../consts.js';
-import getDataSource from '../data-source.js';
+import { GuildIds } from '../consts.js';
 import { User, Character } from '../entities/index.js';
 import XIVApi from '@xivapi/js';
 import dayjs from 'dayjs';
 import logger from '../logger.js';
 import type { APIApplicationCommandOptionChoice } from 'discord-api-types/v10.js';
+import dataSource from '../data-source.js';
 
-const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): number => {
-  const firstSeen = dayjs(firstSeenApi);
+const getNumberOFDays = ({ first_seen_in_fc }: { first_seen_in_fc: Date | null }): number => {
+  const firstSeen = dayjs(first_seen_in_fc);
   const firstPull = dayjs(new Date(2019, 9, 11, 23, 59, 59));
   const beginningOfTime = dayjs(new Date(2019, 8, 2, 23, 59, 59));
 
@@ -22,7 +22,6 @@ const getNumberOFDays = ({ firstSeenApi }: { firstSeenApi: string | Date }): num
   }
 };
 
-const dataSource = await getDataSource();
 const allCharacters = await dataSource.getRepository(Character).find();
 
 const commandRegistrationData = new SlashCommandBuilder()
@@ -34,7 +33,7 @@ const commandRegistrationData = new SlashCommandBuilder()
       .setDescription('FFXIV Character')
       .setAutocomplete(true)
       .setChoices<APIApplicationCommandOptionChoice<string>[]>(
-        ...allCharacters.map((character) => ({ name: character.name, value: character.id })),
+        ...allCharacters.map((character) => ({ name: character.name, value: character.id.toString() })),
       )
       .setRequired(true),
   )
@@ -82,7 +81,7 @@ const DaysCommand: SlashCommand = {
         });
         return;
       }
-      if (!char.firstSeenApi) {
+      if (!char.first_seen_in_fc) {
         await interaction.reply({
           content: `Sorry I have no record of ${char.name} in the FC`,
         });
@@ -98,11 +97,11 @@ const DaysCommand: SlashCommand = {
     let matchingMember: XivApiCharacterSearchResult | undefined;
     let char = await characterRepo
       .createQueryBuilder()
-      .where('LOWER(name) = LOWER(:name)', { name: characterOption.trim().toLowerCase() })
+      .where('LOWER(name) = LOWER(:name)', { name: characterOption.name.trim().toLowerCase() })
       .getOne();
 
     logger.debug('foundChar', char);
-    if (char && char.firstSeenApi) {
+    if (char && char.first_seen_in_fc) {
       const numDays = getNumberOFDays(char);
       await interaction.reply({
         content: `${char.name} has been in the FC for approximately ${numDays} days`,
@@ -110,34 +109,37 @@ const DaysCommand: SlashCommand = {
       return;
     }
 
-    if (char && char.apiId) {
-      const { FreeCompany = null, Character = null } = xivClient.character.get(char.apiId.toString(), { data: 'FC' });
+    if (char && char.id) {
+      const { FreeCompany = null, Character = null } = xivClient.character.get(char.id.toString(), { data: 'FC' });
       if (FreeCompany && FreeCompany.Name.trim().toLowerCase() === 'Crowne of Thorne' && Character) {
         matchingMember = Character;
       }
     }
-    if (!char || !char.apiId) {
-      const { FreeCompanyMembers = [] } = xivClient.freecompany.get(CoTAPIId, { data: 'FCM' });
-      logger.debug('searchResults', FreeCompanyMembers);
-      matchingMember = FreeCompanyMembers.find(
-        (member) => member.Name.trim().toLowerCase() === characterOption.trim().toLowerCase(),
+    if (!char || !char.id) {
+      const results = xivClient.character.search(characterOption.name.trim(), { server: 'Jenova' });
+      const extactMatches = results.Results.filter(
+        (foundChar) => foundChar.Name.trim().toLowerCase() === characterOption.name.toLowerCase().trim(),
       );
+      if (extactMatches.length === 1) {
+        // done
+      }
     }
 
-    logger.debug('matchingMember', matchingMember);
     if (!matchingMember) {
       await interaction.reply({
-        content: `Sorry I can't find a record of ${characterOption.trim()} in the FC through the lodestone.`,
+        content: `Sorry I can't find a record of ${characterOption.name.trim()} in the FC through the lodestone.`,
       });
       return;
     }
 
-    char = characterRepo.create();
-    char.firstSeenApi = new Date();
-    char.apiId = +matchingMember.ID;
-    char.name = matchingMember.Name.trim();
-    char = await characterRepo.save(char, { reload: true });
-    logger.debug('savedChar', char);
+    char = await characterRepo.save(
+      characterRepo.create({
+        first_seen_in_fc: new Date(),
+        apiId: matchingMember.ID.toString(),
+        name: matchingMember.Name.trim(),
+      }),
+      { reload: true },
+    );
     await interaction.reply({
       content: `${char.name} has been in the FC for approximately less than 1 day`,
     });

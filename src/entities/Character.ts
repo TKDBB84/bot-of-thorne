@@ -6,8 +6,11 @@ import AbsentRequest from './AbsentRequest.js';
 
 @Entity({ database: 'cotbot', name: 'characters' })
 export default class Character {
-  @PrimaryGeneratedColumn({ type: 'bigint' })
-  public id: string;
+  @PrimaryGeneratedColumn({ type: 'int' })
+  public id: number;
+
+  @Column({ type: 'bigint', nullable: true })
+  public apiId: string | null;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
   public name: string = '';
@@ -23,6 +26,12 @@ export default class Character {
 
   @Column({ type: 'varchar', length: 255, nullable: true, default: null })
   public free_company_name: string | null;
+
+  @Column({ type: 'datetime', nullable: true })
+  public first_seen_in_fc: Date | null;
+
+  @Column({ type: 'datetime', nullable: true })
+  public last_seen_in_fc: Date | null;
 
   @Column({
     default: CotRanks.NEW,
