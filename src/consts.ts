@@ -7,7 +7,8 @@ export const NewUserChannels = {
   [GuildIds.COT_GUILD_ID]: '601971412000833556',
   [GuildIds.SASNERS_TEST_SERVER_GUILD_ID]: 'xx',
 };
-export const ONE_HOUR = 3600000;
+export const ONE_HOUR_IN_SECONDS = 3600;
+export const ONE_HOUR_IN_MILLISECONDS = ONE_HOUR_IN_SECONDS * 1000;
 export const CoTOfficerChannelId = '331196148079394836';
 export const CoTButtStuffChannelId = '331786517041119233';
 export const CoTPromotionChannelId = '362037806178238464';

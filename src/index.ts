@@ -9,10 +9,17 @@ import allCommands, {
   commandsDataForTesting,
 } from './slash-commands/index.js';
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
-import Redis from 'ioredis';
+import redisClient from './redis.js';
 import logger from './logger.js';
 import sassybotCommands from './sassybot-commands/index.js';
 import { User } from './entities/index.js';
+import { Cron } from 'croner';
+import allCronJobs from './cron-jobs/index.js';
+
+export interface BotCronJob {
+  cronTime: string;
+  exec: () => void | Promise<void>;
+}
 
 type SassybotEvent = SassybotDaysEvent;
 type SassybotDaysEvent = {
@@ -99,7 +106,6 @@ discordClient.on('guildMemberAdd', (member) => {
 });
 
 // register sassybot listeners
-const redisClient = new Redis();
 await redisClient.subscribe('sassybot-events', (err) => {
   if (err) {
     logger.error('error subscribing to reids', err);
@@ -146,6 +152,16 @@ const start = async () => {
     }));
   }
   void (await discordClient.login(DISCORD_TOKEN));
+
+  allCronJobs.forEach((job) => {
+    new Cron(
+      job.cronTime,
+      {
+        timezone: 'America/New_York',
+      },
+      job.exec,
+    );
+  });
 };
 
 void start()

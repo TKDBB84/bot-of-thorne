@@ -8,7 +8,8 @@
   "type": "module",
   "dependencies": {
     "@discordjs/rest": "^1.1.0",
-    "@xivapi/js": "^0.4.1",
+    "axios": "^0.27.2",
+    "croner": "^4.3.17",
     "dayjs": "^1.11.5",
     "discord.js": "^14.3.0",
     "ioredis": "^5.2.3",
