@@ -6,9 +6,9 @@ import updateNonMembers from './clean-up-old-members.js';
 const updateFCMembers: BotCronJob = {
   cronTime: '0 15 8,20 * * *',
   async exec() {
-    const memberList = await getFcMembers()
-    await saveMembersToCharacters(memberList)
-    await updateNonMembers(memberList)
+    const memberList = await getFcMembers();
+    await saveMembersToCharacters(memberList);
+    await updateNonMembers(memberList);
   },
 };
 

@@ -4,7 +4,7 @@ import { CoTAPIId } from '../../consts.js';
 import { setTimeout } from 'node:timers/promises';
 
 const fetchLodestoneCotMembers = async (
-  page: number = 1,
+  page = 1,
   members: XIVFreeCompanyMemberListEntry[] = [],
 ): Promise<XIVFreeCompanyMemberListEntry[]> => {
   if (!page) {
