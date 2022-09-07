@@ -2,7 +2,7 @@ import { format, transports, createLogger } from 'winston';
 import { consoleFormat } from 'winston-console-format';
 
 const logger = createLogger({
-  defaultMeta: { service: 'bot-of-thrones' },
+  defaultMeta: { service: 'bot-of-thorne' },
   level: 'debug',
   format: format.combine(
     format.timestamp(),

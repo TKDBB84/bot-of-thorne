@@ -1,2 +1,2 @@
-# Bot-of-Thrones
-Crowne of Thrones Management Bot
+# Bot-of-Thorne
+Crowne of Thorne Management Bot

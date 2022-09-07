@@ -1,6 +1,6 @@
 {
-  "name": "bot-of-thrones",
-  "version": "1.0.0",
+  "name": "bot-of-thorne",
+  "version": "0.1.0",
   "engines": {
     "node": ">=18.8 <19",
     "npm": ">=8 <9"
@@ -20,7 +20,7 @@
     "winston": "^3.8.1",
     "winston-console-format": "^1.0.8"
   },
-  "description": "Crowne of Thrones Management Bot",
+  "description": "Crowne of Thorne Management Bot",
   "main": "index.js",
   "devDependencies": {
     "@babel/core": "^7.19.0",
@@ -54,7 +54,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com//TKDBB84/bot-of-thrones.git"
+    "url": "https://github.com//TKDBB84/bot-of-thorne.git"
   },
   "author": "Jeffrey Campbell",
   "license": "MIT",
