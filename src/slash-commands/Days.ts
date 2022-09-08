@@ -1,5 +1,5 @@
 import { /*CommandInteraction,*/ SlashCommandBuilder, SlashCommandStringOption } from 'discord.js';
-import type { SlashCommand } from './SlashCommand.js';
+import type { SlashCommands } from './SlashCommands.js';
 // import { GuildIds } from '../consts.js';
 import { /*User, */ Character } from '../entities/index.js';
 // import dayjs from 'dayjs';
@@ -39,8 +39,10 @@ const commandRegistrationData = new SlashCommandBuilder()
   )
   .toJSON();
 
-const DaysCommand: SlashCommand = {
+const DaysCommand: SlashCommands = {
+  scope: 'COT',
   command: 'days',
+  readyToRegister: false,
   commandRegistrationData,
 
   async exec(/*interaction: CommandInteraction*/): Promise<void> {
