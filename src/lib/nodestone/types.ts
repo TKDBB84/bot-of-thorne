@@ -9,7 +9,7 @@ export declare type XIVCharacter = XIVCharacterBase & {
   Portrait: string;
   FreeCompany: {
     ID: string;
-  };
+  } | null;
 };
 
 export declare type XIVApiPagination = {

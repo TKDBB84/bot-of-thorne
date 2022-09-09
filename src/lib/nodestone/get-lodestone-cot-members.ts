@@ -1,9 +1,9 @@
-import type { XIVFreeCompanyMemberListEntry } from '../../lib/nodestone/index.js';
+import type { XIVFreeCompanyMemberListEntry } from './types.js';
 import { ONE_HOUR_IN_SECONDS } from '../../consts.js';
 import redisClient from '../../redisClient.js';
-import fetchLodestoneCotMembers from '../../lib/nodestone/fetch-lodestone-cot-members.js';
+import fetchLodestoneCotMembers from './fetch-lodestone-cot-members.js';
 
-const getLodestoneMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMemberListEntry[]> = async (
+const getLodestoneCotMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMemberListEntry[]> = async (
   forcePull = false,
 ) => {
   const redisMemberListKey = 'Nodestone:COT:MemberList';
@@ -22,4 +22,4 @@ const getLodestoneMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMember
   return freshMemberList;
 };
 
-export default getLodestoneMembers;
+export default getLodestoneCotMembers;

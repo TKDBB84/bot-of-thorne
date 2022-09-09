@@ -4,8 +4,10 @@ import dayjs from 'dayjs';
 import dataSource from '../../data-source.js';
 import { Character, User } from '../../entities/index.js';
 import type { AutocompleteInteraction, CommandInteraction } from 'discord.js';
-import { GuildIds } from '../../consts.js';
+import { CoTAPIId, GuildIds } from '../../consts.js';
 import { Like } from 'typeorm';
+import { getLodestoneCharacter } from '../../lib/nodestone/index.js';
+import logger from '../../logger.js';
 
 const characterRepo = dataSource.getRepository(Character);
 
@@ -50,19 +52,68 @@ const command: SlashCommandCallback = {
     }
     const characterId = providedCharacter.value;
     await User.touch(discordId);
-    let character: Character;
-    try {
-      if (Number.isInteger(characterId)) {
-        character = await characterRepo.findOneByOrFail({ id: +characterId });
-      } else {
-        character = await characterRepo.findOneByOrFail({ name: Like(characterId.toString()) });
-      }
-    } catch {
-      await interaction.reply({
-        content: `Sorry I have no record of ${characterId.toString()} in the FC`,
-      });
-      return;
+    let character: Character | null;
+
+    if (Number.isInteger(characterId)) {
+      character = await characterRepo.findOneBy({ id: +characterId });
+    } else {
+      character = await characterRepo.findOneBy({ name: Like(characterId.toString()) });
     }
+    if (!character) {
+      const characterList = await getLodestoneCharacter({ name: characterId.toString() });
+      if (characterList.length === 0) {
+        await interaction.reply({
+          content: `Sorry I have no record of ${characterId.toString()} in the FC nor on Jenova in the Lodestone`,
+        });
+        return;
+      } else if (characterList.length === 1) {
+        const foundChar = characterList[0];
+        if (foundChar) {
+          character = await characterRepo.save(
+            characterRepo.create({
+              apiId: foundChar.ID.toString(),
+              name: foundChar.Name,
+              avatar: foundChar.Avatar,
+              portrait: foundChar.Portrait,
+              free_company_id: foundChar.FreeCompany?.ID || null,
+              free_company_name: foundChar.FreeCompany?.ID === CoTAPIId ? 'Crowne of Thorne' : null,
+              first_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
+              last_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
+              last_promotion: null,
+            }),
+          );
+        } else {
+          logger.error('Found but not found?', { characterList, foundChar, characterId });
+          throw new Error('Found but not found?');
+        }
+      } else {
+        // multipule results.. need some abstraction here... for now you get the first one
+        const foundChar = characterList[0];
+        if (foundChar) {
+          character = await characterRepo.save(
+            characterRepo.create({
+              apiId: foundChar.ID.toString(),
+              name: foundChar.Name,
+              avatar: foundChar.Avatar,
+              portrait: foundChar.Portrait,
+              free_company_id: foundChar.FreeCompany?.ID || null,
+              free_company_name: foundChar.FreeCompany?.ID === CoTAPIId ? 'Crowne of Thorne' : null,
+              first_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
+              last_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
+              last_promotion: null,
+            }),
+          );
+        } else {
+          logger.error('Found but not found?', { characterList, foundChar, characterId });
+          throw new Error('Found but not found?');
+        }
+      }
+    }
+
+    if (character.free_company_id) {
+
+    }
+
     const numDays = getNumberOFDays(character);
     await interaction.reply({
       content: `${character.name} has been in the FC for approximately ${numDays} days`,

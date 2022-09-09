@@ -3,8 +3,7 @@ import dataSource from '../../data-source.js';
 import { Character } from '../../entities/index.js';
 import { CoTAPIId } from '../../consts.js';
 import { In, Not, IsNull, Brackets } from 'typeorm';
-import { getLodestoneCharacter } from '../../lib/nodestone/index.js';
-import getFcData from './get-fc-data.js';
+import { getLodestoneCharacter, getLodestoneFreecompany } from '../../lib/nodestone/index.js';
 const charRepo = dataSource.getRepository<Character>(Character);
 
 const updateNonMembers = async (memberList: XIVFreeCompanyMemberListEntry[]): Promise<void> => {
@@ -13,9 +12,10 @@ const updateNonMembers = async (memberList: XIVFreeCompanyMemberListEntry[]): Pr
   for (const previousMember of previousMembers) {
     let newFCId: null | string = null;
     if (previousMember.apiId) {
-      ({
-        FreeCompany: { ID: newFCId },
-      } = await getLodestoneCharacter({ apiId: previousMember.apiId }));
+      const { FreeCompany: freeCompany } = await getLodestoneCharacter({ apiId: previousMember.apiId });
+      if (freeCompany && freeCompany.ID) {
+        newFCId = freeCompany.ID;
+      }
     }
     await charRepo.update(previousMember.id, {
       free_company_id: newFCId,
@@ -35,7 +35,7 @@ const updateNonMembers = async (memberList: XIVFreeCompanyMemberListEntry[]): Pr
 
   for (const missingFCName of missingFCNames) {
     if (missingFCName.free_company_id) {
-      const { Name } = await getFcData(missingFCName.free_company_id);
+      const { Name } = await getLodestoneFreecompany(missingFCName.free_company_id);
       await charRepo.update(missingFCName.id, {
         free_company_name: Name,
       });
