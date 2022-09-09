@@ -1,7 +1,7 @@
+import type { XIVFreeCompanyMemberListEntry } from '../../lib/nodestone/index.js';
 import dataSource from '../../data-source.js';
 import { Character } from '../../entities/index.js';
 import { CoTAPIId } from '../../consts.js';
-import type { XIVFreeCompanyMemberListEntry } from '../../lib/nodestone/index.js';
 
 const saveMembersToCharacters: (memberList: XIVFreeCompanyMemberListEntry[]) => Promise<void> = async (
   memberList: XIVFreeCompanyMemberListEntry[],

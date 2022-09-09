@@ -1,15 +1,8 @@
 import 'reflect-metadata';
 import { Client, GatewayIntentBits, IntentsBitField, Interaction, InteractionType } from 'discord.js';
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/v9';
+import allCommands from './slash-commands/index.js';
 import { GuildIds, noop } from './consts.js';
-import allCommands, {
-  commandsDataForGlobal,
-  commandsDataForCoT,
-  commandsDataForTesting,
-} from './slash-commands/index.js';
-import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
-import redisClient from './redis.js';
+import redisClient from './redisClient.js';
 import logger from './logger.js';
 import sassybotCommands from './sassybot-commands/index.js';
 import { User } from './entities/index.js';
@@ -18,7 +11,7 @@ import allCronJobs from './cron-jobs/index.js';
 
 export interface BotCronJob {
   cronTime: string;
-  exec: () => void | Promise<void>;
+  exec: (discordClient: Client) => void | Promise<void>;
 }
 
 type SassybotEvent = SassybotDaysEvent;
@@ -56,36 +49,10 @@ const allIntents = new IntentsBitField([
   GatewayIntentBits.MessageContent,
   GatewayIntentBits.GuildScheduledEvents,
 ]);
-const commandsRegistered: { global: string[]; test: string[]; CoT: string[] } = {
-  global: ['ping'],
-  test: ['days'],
-  CoT: [],
-};
 
-const toRegisterGlobal: RESTPostAPIApplicationCommandsJSONBody[] = [];
-commandsDataForGlobal.forEach((slashCommand) => {
-  if (!commandsRegistered.global.includes(slashCommand.command)) {
-    toRegisterGlobal.push(slashCommand.commandRegistrationData);
-  }
-});
-
-const toRegisterForTest: RESTPostAPIApplicationCommandsJSONBody[] = [];
-commandsDataForTesting.forEach((slashCommand) => {
-  if (!commandsRegistered.test.includes(slashCommand.command)) {
-    toRegisterForTest.push(slashCommand.commandRegistrationData);
-  }
-});
-const toRegisterForCoT: RESTPostAPIApplicationCommandsJSONBody[] = [];
-commandsDataForCoT.forEach((slashCommand) => {
-  if (!commandsRegistered.CoT.includes(slashCommand.command)) {
-    toRegisterForCoT.push(slashCommand.commandRegistrationData);
-  }
-});
-
-const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN);
 const discordClient = new Client({ intents: allIntents });
 discordClient.on('interactionCreate', async (interaction: Interaction) => {
-  if (interaction.type !== InteractionType.ApplicationCommand) {
+  if (interaction.type !== InteractionType.ApplicationCommand && !interaction.isAutocomplete()) {
     return;
   }
 
@@ -94,7 +61,11 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
   );
 
   if (command) {
-    await command.exec(interaction);
+    if (interaction.isAutocomplete()) {
+      await command.autocomplete(interaction);
+    } else if (interaction.type === InteractionType.ApplicationCommand) {
+      await command.exec(interaction);
+    }
   }
 });
 
@@ -136,21 +107,6 @@ redisClient.on('message', (channel: string, message: string) => {
 });
 
 const start = async () => {
-  if (toRegisterGlobal.length) {
-    void (await rest.put(Routes.applicationCommands(DISCORD_CLIENT_ID), {
-      body: toRegisterGlobal.map((command) => command),
-    }));
-  }
-  if (toRegisterForCoT.length) {
-    void (await rest.put(Routes.applicationGuildCommands(DISCORD_CLIENT_ID, GuildIds.COT_GUILD_ID), {
-      body: toRegisterForCoT.map((command) => command),
-    }));
-  }
-  if (toRegisterForTest.length) {
-    void (await rest.put(Routes.applicationGuildCommands(DISCORD_CLIENT_ID, GuildIds.SASNERS_TEST_SERVER_GUILD_ID), {
-      body: toRegisterForTest.map((command) => command),
-    }));
-  }
   void (await discordClient.login(DISCORD_TOKEN));
 
   allCronJobs.forEach((job) => {
@@ -159,7 +115,7 @@ const start = async () => {
       {
         timezone: 'America/New_York',
       },
-      job.exec,
+      job.exec.bind(job, discordClient),
     );
   });
 };

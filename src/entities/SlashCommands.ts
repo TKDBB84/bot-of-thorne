@@ -9,8 +9,5 @@ export default class SlashCommand {
   public commandName: string;
 
   @Column({ type: 'varchar', length: 255, nullable: false })
-  public filePath: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: false })
   public checksum: string;
 }

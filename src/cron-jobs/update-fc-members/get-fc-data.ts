@@ -1,5 +1,5 @@
 import type { XIVFreeCompany } from '../../lib/nodestone/index.js';
-import redisClient from '../../redis.js';
+import redisClient from '../../redisClient.js';
 import { ONE_HOUR_IN_SECONDS } from '../../consts.js';
 import fetchLodestoneFreecompany from '../../lib/nodestone/fetch-lodestone-freecompany.js';
 

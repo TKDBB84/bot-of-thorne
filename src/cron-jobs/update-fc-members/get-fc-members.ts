@@ -1,6 +1,6 @@
-import { ONE_HOUR_IN_SECONDS } from '../../consts.js';
-import redisClient from '../../redis.js';
 import type { XIVFreeCompanyMemberListEntry } from '../../lib/nodestone/index.js';
+import { ONE_HOUR_IN_SECONDS } from '../../consts.js';
+import redisClient from '../../redisClient.js';
 import fetchLodestoneCotMembers from '../../lib/nodestone/fetch-lodestone-cot-members.js';
 
 const getLodestoneMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMemberListEntry[]> = async (

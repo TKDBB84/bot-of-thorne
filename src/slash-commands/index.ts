@@ -1,9 +1,7 @@
-import DaysCommand from './Days.js';
-import PingCommand from './Ping.js';
-import type { SlashCommands } from './SlashCommands.js';
+import type { SlashCommandCallback, Scope, SlashCommandRegistration } from './types.js';
+import { command as DaysCommand, registrationData as DaysRegistration } from './days/index.js';
+import { command as PingCommand, registrationData as PingRegistration } from './ping/index.js';
 
+export type { SlashCommandCallback, Scope, SlashCommandRegistration };
 export default [DaysCommand, PingCommand];
-export const commandsDataForGlobal: SlashCommands[] = [PingCommand];
-export const commandsDataForTesting: SlashCommands[] = [DaysCommand];
-export const commandsDataForCoT: SlashCommands[] = [];
-export { SlashCommands };
+export const registrationData = [DaysRegistration, PingRegistration];

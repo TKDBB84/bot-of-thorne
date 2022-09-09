@@ -1,16 +1,16 @@
-import { Routes } from 'discord-api-types/v9';
+import { Routes } from 'discord.js';
 import { GuildIds } from '../../consts.js';
-import type { SlashCommands } from '../../slash-commands/index.js';
 import { REST } from '@discordjs/rest';
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
+import type { SlashCommandRegistration } from '../../slash-commands/index.js';
 
 const { DISCORD_CLIENT_ID, DISCORD_TOKEN } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
   throw new Error('No Client ID Found');
 }
 
-const registerCommands = async (commands: SlashCommands[]): Promise<void> => {
-  const rest = new REST({ version: '9' }).setToken(DISCORD_TOKEN);
+const registerCommands = async (commands: SlashCommandRegistration[]): Promise<void> => {
+  const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
 
   const COTCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   const STSCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
@@ -19,14 +19,14 @@ const registerCommands = async (commands: SlashCommands[]): Promise<void> => {
   commands.forEach((command) => {
     switch (command.scope) {
       case 'COT':
-        COTCommands.push(command.commandRegistrationData);
+        COTCommands.push(command.registrationData);
         break;
       case 'STS':
-        STSCommands.push(command.commandRegistrationData);
+        STSCommands.push(command.registrationData);
         break;
       case 'ALL':
       default:
-        ALLCommands.push(command.commandRegistrationData);
+        ALLCommands.push(command.registrationData);
     }
   });
 
