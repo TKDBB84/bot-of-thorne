@@ -25,8 +25,8 @@ async function fetchCharacterListPages(
 }
 
 function fetchLodestoneCharacter({ apiId }: SearchByIdParam): Promise<XIVCharacter>;
-function fetchLodestoneCharacter({ name }: SearchByNameParam): Promise<XIVCharacter[]>;
-async function fetchLodestoneCharacter({ apiId = '', name = '' }) {
+function fetchLodestoneCharacter({ name, exactMatch }: SearchByNameParam): Promise<XIVCharacter[]>;
+async function fetchLodestoneCharacter({ apiId = '', name = '', exactMatch = true }) {
   if (apiId) {
     const { data } = await axios.get<XIVCharacterResponse>(`http://localhost:8080/character/${apiId}`, {
       params: { data: 'FC' },
@@ -36,7 +36,7 @@ async function fetchLodestoneCharacter({ apiId = '', name = '' }) {
   if (name) {
     const charList = await fetchCharacterListPages(name);
     const nameExactMatch = charList.filter(
-      (matchingChar) => matchingChar.Name.toLowerCase().trim() === name.toLowerCase().trim(),
+      (matchingChar) => !exactMatch || matchingChar.Name.toLowerCase().trim() === name.toLowerCase().trim(),
     );
     return Promise.all(nameExactMatch.map(({ ID: _apiId }) => getLodestoneCharacter({ apiId: _apiId.toString() })));
   }

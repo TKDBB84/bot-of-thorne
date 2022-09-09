@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Client, GatewayIntentBits, IntentsBitField, Interaction, InteractionType } from 'discord.js';
+import { Client, GatewayIntentBits, IntentsBitField, Interaction } from 'discord.js';
 import allCommands from './slash-commands/index.js';
 import { GuildIds, noop } from './consts.js';
 import redisClient from './redisClient.js';
@@ -53,9 +53,7 @@ const allIntents = new IntentsBitField([
 
 const discordClient = new Client({ intents: allIntents });
 discordClient.on('interactionCreate', async (interaction: Interaction) => {
-  if (interaction.type !== InteractionType.ApplicationCommand && !interaction.isAutocomplete()) {
-    return;
-  }
+  if (!interaction.isChatInputCommand() && !interaction.isAutocomplete()) return;
 
   const command = allCommands.find(
     (_command) => _command.command.trim().toLowerCase() === interaction.commandName.trim().toLowerCase(),
@@ -64,7 +62,7 @@ discordClient.on('interactionCreate', async (interaction: Interaction) => {
   if (command) {
     if (interaction.isAutocomplete()) {
       await command.autocomplete(interaction);
-    } else if (interaction.type === InteractionType.ApplicationCommand) {
+    } else if (interaction.isChatInputCommand()) {
       await command.exec(interaction);
     }
   }
@@ -108,6 +106,14 @@ redisClient.on('message', (channel: string, message: string) => {
 });
 
 const start = async () => {
+  const uniqueCommandNames = new Set<string>();
+  allCommands.forEach(({ command }) => {
+    uniqueCommandNames.add(command);
+  });
+  if (uniqueCommandNames.size !== allCommands.length) {
+    throw new Error('Duplicate Command Names Are Not Supported');
+  }
+
   void (await registerSlashCommands());
   void (await discordClient.login(DISCORD_TOKEN));
 

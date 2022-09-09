@@ -3,10 +3,10 @@ import commandRegistrationData from './registration-data.js';
 import dayjs from 'dayjs';
 import dataSource from '../../data-source.js';
 import { Character, User } from '../../entities/index.js';
-import type { AutocompleteInteraction, CommandInteraction } from 'discord.js';
+import type { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import { CoTAPIId, GuildIds } from '../../consts.js';
 import { Like } from 'typeorm';
-import { getLodestoneCharacter } from '../../lib/nodestone/index.js';
+import { getLodestoneCharacter, getLodestoneFreecompany } from '../../lib/nodestone/index.js';
 import logger from '../../logger.js';
 
 const characterRepo = dataSource.getRepository(Character);
@@ -37,7 +37,7 @@ const command: SlashCommandCallback = {
 
     await interaction.respond(choices);
   },
-  async exec(interaction: CommandInteraction): Promise<void> {
+  async exec(interaction: ChatInputCommandInteraction): Promise<void> {
     if (
       !interaction.inGuild() ||
       (interaction.guildId !== GuildIds.COT_GUILD_ID && interaction.guildId !== GuildIds.SASNERS_TEST_SERVER_GUILD_ID)
@@ -87,37 +87,30 @@ const command: SlashCommandCallback = {
           throw new Error('Found but not found?');
         }
       } else {
-        // multipule results.. need some abstraction here... for now you get the first one
-        const foundChar = characterList[0];
-        if (foundChar) {
-          character = await characterRepo.save(
-            characterRepo.create({
-              apiId: foundChar.ID.toString(),
-              name: foundChar.Name,
-              avatar: foundChar.Avatar,
-              portrait: foundChar.Portrait,
-              free_company_id: foundChar.FreeCompany?.ID || null,
-              free_company_name: foundChar.FreeCompany?.ID === CoTAPIId ? 'Crowne of Thorne' : null,
-              first_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
-              last_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
-              last_promotion: null,
-            }),
-          );
-        } else {
-          logger.error('Found but not found?', { characterList, foundChar, characterId });
-          throw new Error('Found but not found?');
-        }
+        await interaction.reply(
+          'Multiple Characters Match This Name On Jenova, Please use /claim to claim the correct one',
+        );
+        return;
       }
     }
 
-    if (character.free_company_id) {
-
+    if (character.free_company_id && !character.free_company_name) {
+      const fcData = await getLodestoneFreecompany(character.free_company_id);
+      await characterRepo.update(character.id, { free_company_name: fcData.Name });
+      character.free_company_name = fcData.Name;
     }
 
-    const numDays = getNumberOFDays(character);
-    await interaction.reply({
-      content: `${character.name} has been in the FC for approximately ${numDays} days`,
-    });
+    if (character.free_company_id === CoTAPIId) {
+      await interaction.reply({
+        content: `${character.name} has been in the FC for approximately ${getNumberOFDays(character)} days`,
+      });
+    } else {
+      await interaction.reply(
+        `${character.name} appears to be a member of ${
+          character.free_company_name ? character.free_company_name : 'No'
+        } Freecompany, I only track Crowne of Thorne Members.`,
+      );
+    }
     return;
   },
 };
