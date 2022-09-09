@@ -4,7 +4,7 @@ import registrationData from './registration-data.js';
 
 const command: SlashCommandCallback = {
   command: registrationData.registrationData.name,
-  async autocomplete() {},
+  autocomplete: () => Promise.resolve(),
   async exec(interaction: CommandInteraction): Promise<void> {
     await interaction.reply({ content: 'Pong!', ephemeral: true });
   },

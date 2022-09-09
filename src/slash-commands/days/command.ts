@@ -31,7 +31,7 @@ const command: SlashCommandCallback = {
       .createQueryBuilder()
       .where({ name: Like(focusedOption) })
       .getMany();
-    let choices = allCharacter.map((char) => ({ name: char.name, value: char.id.toString() }));
+    const choices = allCharacter.map((char) => ({ name: char.name, value: char.id.toString() }));
 
     await interaction.respond(choices);
   },
@@ -59,7 +59,7 @@ const command: SlashCommandCallback = {
       }
     } catch {
       await interaction.reply({
-        content: `Sorry I have no record of ${characterId} in the FC`,
+        content: `Sorry I have no record of ${characterId.toString()} in the FC`,
       });
       return;
     }
