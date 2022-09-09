@@ -43,3 +43,11 @@ export declare type XIVFreeCompanyResponseWithMembers = XIVFreeCompanyResponse &
 export declare type XIVCharacterResponse = {
   Character: XIVCharacter;
 };
+
+export declare type XIVCharacterSearchResponse = {
+  List: XIVCharacterBase[];
+  Pagination: XIVApiPagination;
+};
+
+export declare type SearchByIdParam = { apiId: string };
+export declare type SearchByNameParam = { name: string };

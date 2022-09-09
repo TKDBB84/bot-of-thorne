@@ -6,7 +6,7 @@ import fetchLodestoneCotMembers from '../../lib/nodestone/fetch-lodestone-cot-me
 const getLodestoneMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMemberListEntry[]> = async (
   forcePull = false,
 ) => {
-  const redisMemberListKey = 'Nodestone:MemberList';
+  const redisMemberListKey = 'Nodestone:COT:MemberList';
   if (!forcePull) {
     try {
       const memberListString = await redisClient.get(redisMemberListKey);

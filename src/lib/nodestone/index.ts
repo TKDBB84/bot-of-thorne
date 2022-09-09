@@ -1,5 +1,5 @@
 import fetchLodestoneCotMembers from './fetch-lodestone-cot-members.js';
-import fetchLodestoneCharacter from './fetch-lodestone-character.js';
+import getLodestoneCharacter from './get-lodestone-character.js';
 
-export { fetchLodestoneCharacter, fetchLodestoneCotMembers };
+export { getLodestoneCharacter, fetchLodestoneCotMembers };
 export * from './types.js';

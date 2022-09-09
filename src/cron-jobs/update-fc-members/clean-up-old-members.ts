@@ -3,7 +3,7 @@ import dataSource from '../../data-source.js';
 import { Character } from '../../entities/index.js';
 import { CoTAPIId } from '../../consts.js';
 import { In, Not, IsNull, Brackets } from 'typeorm';
-import { fetchLodestoneCharacter } from '../../lib/nodestone/index.js';
+import { getLodestoneCharacter } from '../../lib/nodestone/index.js';
 import getFcData from './get-fc-data.js';
 const charRepo = dataSource.getRepository<Character>(Character);
 
@@ -15,7 +15,7 @@ const updateNonMembers = async (memberList: XIVFreeCompanyMemberListEntry[]): Pr
     if (previousMember.apiId) {
       ({
         FreeCompany: { ID: newFCId },
-      } = await fetchLodestoneCharacter(previousMember.apiId));
+      } = await getLodestoneCharacter({ apiId: previousMember.apiId }));
     }
     await charRepo.update(previousMember.id, {
       free_company_id: newFCId,

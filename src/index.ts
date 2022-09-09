@@ -8,6 +8,7 @@ import sassybotCommands from './sassybot-commands/index.js';
 import { User } from './entities/index.js';
 import { Cron } from 'croner';
 import allCronJobs from './cron-jobs/index.js';
+import registerSlashCommands from './lib/register-slash-commands/index.js';
 
 export interface BotCronJob {
   cronTime: string;
@@ -107,6 +108,7 @@ redisClient.on('message', (channel: string, message: string) => {
 });
 
 const start = async () => {
+  void (await registerSlashCommands());
   void (await discordClient.login(DISCORD_TOKEN));
 
   allCronJobs.forEach((job) => {

@@ -7,7 +7,7 @@ import registerCommands from './register-command.js';
 import { registrationData } from '../../slash-commands/index.js';
 
 const commandRepo = dataSource.getRepository(SlashCommand);
-const registerSlashCommands = async (): Promise<number> => {
+const registerSlashCommands: () => Promise<boolean> = async () => {
   const allRegisteredSlashCommands = await commandRepo.find();
   const allToRegister: SlashCommandRegistration[] = [];
   for (const registrationDatum of registrationData) {
@@ -29,9 +29,7 @@ const registerSlashCommands = async (): Promise<number> => {
     }
     await registerCommands(allToRegister);
   }
-  return 0;
+  return true;
 };
 
-registerSlashCommands()
-  .then((code) => process.exit(code))
-  .catch((e) => process.exit(e ? 1 : 0));
+export default registerSlashCommands;
