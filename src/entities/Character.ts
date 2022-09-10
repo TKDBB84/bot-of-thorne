@@ -1,6 +1,5 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, Entity, Index, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
 import { CotRanks } from '../consts.js';
-import User from './User.js';
 import PromotionRequest from './PromotionRequest.js';
 import AbsentRequest from './AbsentRequest.js';
 
@@ -9,9 +8,11 @@ export default class Character {
   @PrimaryGeneratedColumn({ type: 'int' })
   public id: number;
 
+  @Index({unique: true, })
   @Column({ type: 'bigint', nullable: true })
   public apiId: string | null;
 
+  @Index()
   @Column({ type: 'varchar', length: 255, nullable: false })
   public name = '';
 
@@ -21,6 +22,7 @@ export default class Character {
   @Column({ type: 'varchar', length: 255, nullable: false, default: '' })
   public portrait = '';
 
+  @Index()
   @Column({ type: 'varchar', length: 255, nullable: true, default: null })
   public free_company_id: string | null;
 
@@ -43,9 +45,6 @@ export default class Character {
 
   @Column({ type: 'timestamp', nullable: true, default: null })
   public last_promotion: Date | null;
-
-  @ManyToOne(() => User, (user) => user.characters, { eager: true, nullable: true })
-  public user: Relation<User> | null;
 
   @OneToMany(() => PromotionRequest, (promotion) => promotion.character, { eager: true, nullable: true })
   promotions: Relation<Array<PromotionRequest>> | null;

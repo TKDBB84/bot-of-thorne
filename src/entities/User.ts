@@ -1,5 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn, Relation } from 'typeorm';
-import Character from './Character.js';
+import { Column, Entity, PrimaryColumn } from 'typeorm';
 import dataSource from '../data-source.js';
 
 @Entity({ database: 'cotbot', name: 'discord_users' })
@@ -15,12 +14,6 @@ export default class User {
 
   @Column({ type: 'timestamp', default: 'NOW()', nullable: false, onUpdate: 'NOW()' })
   public last_seen: Date = new Date();
-
-  @OneToMany(() => Character, (character) => character.user, {
-    eager: true,
-    nullable: true,
-  })
-  public characters: Relation<Array<Character>> | null;
 
   public static async touch(id: string): Promise<User> {
     const userRepo = dataSource.getRepository<User>(User);
