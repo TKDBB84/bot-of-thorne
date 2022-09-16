@@ -26,7 +26,7 @@ type SassybotDaysEvent = {
   messageId: string;
 };
 
-const { DISCORD_TOKEN, DISCORD_CLIENT_ID } = process.env;
+const { BOT_CLIENT_ID: DISCORD_TOKEN, BOT_CLIENT_SECRET: DISCORD_CLIENT_ID } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
   throw new Error('MISSING REQUIRED ENV VARIABLES');
 }

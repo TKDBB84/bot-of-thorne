@@ -1,5 +1,5 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Relation } from 'typeorm';
-import { CotRankTo } from '../consts';
+import { CotRankTo } from '../consts.js';
 import Character from './Character.js';
 
 @Entity({ database: 'cotbot', name: 'promotion_requests' })

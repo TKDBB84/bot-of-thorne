@@ -8,7 +8,7 @@ export default class Character {
   @PrimaryGeneratedColumn({ type: 'int' })
   public id: number;
 
-  @Index({unique: true, })
+  @Index({ unique: true })
   @Column({ type: 'bigint', nullable: true })
   public apiId: string | null;
 
@@ -46,9 +46,9 @@ export default class Character {
   @Column({ type: 'timestamp', nullable: true, default: null })
   public last_promotion: Date | null;
 
-  @OneToMany(() => PromotionRequest, (promotion) => promotion.character, { eager: true, nullable: true })
+  @OneToMany(() => PromotionRequest, (promotion) => promotion.character, { nullable: true })
   promotions: Relation<Array<PromotionRequest>> | null;
 
-  @OneToMany(() => AbsentRequest, (absence) => absence.character, { eager: true, nullable: true })
+  @OneToMany(() => AbsentRequest, (absence) => absence.character, { nullable: true })
   absences: Relation<Array<AbsentRequest>> | null;
 }

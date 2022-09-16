@@ -8,8 +8,8 @@ const dataSource = await new DataSource({
   username: process.env['TYPEORM_USERNAME'] ?? 'cotbot',
   password: process.env['TYPEORM_PASSWORD'] ?? '',
   database: process.env['TYPEORM_DATABASE '] ?? 'cotbot',
-  synchronize: !!process.env['TYPEORM_SYNC'],
-  logging: !!process.env['TYPEORM_LOGGING'],
+  synchronize: true, // !!process.env['TYPEORM_SYNC'],
+  logging: true, // !!process.env['TYPEORM_LOGGING'],
   entities: allEntities,
 }).initialize();
 
