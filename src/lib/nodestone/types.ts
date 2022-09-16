@@ -50,4 +50,4 @@ export declare type XIVCharacterSearchResponse = {
 };
 
 export declare type SearchByIdParam = { apiId: string };
-export declare type SearchByNameParam = { name: string, exactMatch?: boolean };
+export declare type SearchByNameParam = { name: string; exactMatch?: boolean };
