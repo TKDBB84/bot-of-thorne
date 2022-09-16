@@ -27,6 +27,7 @@ const autocomplete = async (interaction: AutocompleteInteraction): Promise<void>
   const allCharacter = await characterRepo
     .createQueryBuilder()
     .where({ name: Like(nameSearch) })
+    .orderBy('name', 'ASC')
     .limit(5)
     .getMany();
   const choices = allCharacter.map((char) => ({ name: char.name, value: char.id.toString() }));

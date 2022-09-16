@@ -6,7 +6,7 @@ export default class User {
   @PrimaryColumn({ type: 'bigint' })
   public id: string;
 
-  @Column({ type: 'varchar', length: 14, default: 'Etc/UTC', nullable: false })
+  @Column({ type: 'varchar', length: 64, default: 'Etc/UTC', nullable: false })
   public timezone = 'Etc/UTC';
 
   @Column({ type: 'datetime', default: () => 'NOW()', nullable: false })
