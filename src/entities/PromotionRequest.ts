@@ -7,7 +7,7 @@ export default class PromotionRequest {
   @PrimaryGeneratedColumn({ type: 'int' })
   public id: number;
 
-  @CreateDateColumn({ type: 'datetime', default: () => 'NOW()', nullable: false })
+  @CreateDateColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP(6)', nullable: false })
   public date_requested: Date = new Date();
 
   @Column({
