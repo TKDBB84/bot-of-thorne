@@ -17,11 +17,10 @@ async function fetchCharacterListPages(
   const { data } = await nodeStoneRequest.get<XIVCharacterSearchResponse>('/character/search', {
     params: { name, server: 'Jenova', Page: page },
   });
-  charList.concat(data.List);
   if (data.Pagination.PageNext) {
-    return fetchCharacterListPages(name, ++page, charList);
+    return fetchCharacterListPages(name, ++page, charList.concat(data.List));
   }
-  return charList;
+  return charList.concat(data.List);
 }
 
 function fetchLodestoneCharacter({ apiId }: SearchByIdParam): Promise<XIVCharacter>;

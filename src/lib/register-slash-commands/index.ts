@@ -28,13 +28,15 @@ const registerSlashCommands: () => Promise<boolean> = async () => {
         }
       }
     }
-    if (allToRegister.length) {
-      logger.info('Commands To Be Registered: ', allToRegister.map((e) => e.registrationData.name))
-      await registerCommands(allToRegister);
-    } else {
-      console.trace('from where?')
-      logger.info('No Commands Need Updating')
-    }
+  }
+  if (allToRegister.length) {
+    logger.info(
+      'Commands To Be Registered: ',
+      allToRegister.map((e) => e.registrationData.name),
+    );
+    await registerCommands(allToRegister);
+  } else {
+    logger.info('No Commands Need Updating');
   }
   return true;
 };

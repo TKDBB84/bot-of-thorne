@@ -14,15 +14,11 @@ const characterRepo = dataSource.getRepository(Character);
 const getNumberOFDays = ({ first_seen_in_fc }: { first_seen_in_fc: Date | null }): number => {
   const firstSeen = dayjs(first_seen_in_fc);
   const firstPull = dayjs(new Date(2019, 9, 11, 23, 59, 59));
-  const beginningOfTime = dayjs(new Date(2019, 8, 2, 23, 59, 59));
 
-  if (firstSeen.isBefore(beginningOfTime)) {
-    return dayjs().diff(beginningOfTime, 'd');
-  } else if (firstSeen.isAfter(beginningOfTime) && firstSeen.isBefore(firstPull)) {
-    return dayjs().diff(beginningOfTime, 'd');
-  } else {
-    return dayjs().diff(firstSeen, 'd');
+  if (firstSeen.isBefore(firstPull)) {
+    return dayjs().diff(firstPull, 'd') + 1;
   }
+  return dayjs().diff(firstSeen, 'd') + 1;
 };
 
 const command: SlashCommandCallback = {
@@ -60,9 +56,7 @@ const command: SlashCommandCallback = {
     }
     if (!character) {
       await interaction.deferReply();
-      console.log({providedCharacter})
       const characterList = await getLodestoneCharacter({ name: characterId.toString() });
-      console.log({characterList})
       if (characterList.length === 0) {
         await interaction.editReply({
           content: `Sorry I have no record of ${characterId.toString()} in the FC nor on Jenova in the Lodestone`,
@@ -71,6 +65,7 @@ const command: SlashCommandCallback = {
       } else if (characterList.length === 1) {
         const foundChar = characterList[0];
         if (foundChar) {
+          const isCot = foundChar.FreeCompany?.ID === CoTAPIId;
           character = await characterRepo.save(
             characterRepo.create({
               apiId: foundChar.ID.toString(),
@@ -78,12 +73,19 @@ const command: SlashCommandCallback = {
               avatar: foundChar.Avatar,
               portrait: foundChar.Portrait,
               free_company_id: foundChar.FreeCompany?.ID || null,
-              free_company_name: foundChar.FreeCompany?.ID === CoTAPIId ? 'Crowne of Thorne' : null,
-              first_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
-              last_seen_in_fc: foundChar.FreeCompany?.ID === CoTAPIId ? new Date() : null,
+              free_company_name: isCot ? 'Crowne of Thorne' : null,
+              first_seen_in_fc: isCot ? new Date() : null,
+              last_seen_in_fc: isCot ? new Date() : null,
               last_promotion: null,
             }),
           );
+          if (isCot) {
+            await interaction.editReply(
+              `This is My First Time Seeing ${foundChar.Name} as a member of Crowne of Thorne, so today is ${foundChar.Name}'s 1st Day`,
+            );
+            return;
+          }
+          await interaction.editReply('I have');
         } else {
           logger.error('Found but not found?', { characterList, foundChar, characterId });
           throw new Error('Found but not found?');
@@ -95,13 +97,17 @@ const command: SlashCommandCallback = {
     }
 
     if (character.free_company_id && !character.free_company_name) {
-      await interaction.deferReply();
+      if (!interaction.deferred) {
+        await interaction.deferReply();
+      }
       const fcData = await getLodestoneFreecompany(character.free_company_id);
       await characterRepo.update(character.id, { free_company_name: fcData.Name });
       character.free_company_name = fcData.Name;
     }
 
-    const replyFn = interaction.deferred ? interaction.editReply : interaction.reply;
+    const replyFn = interaction.deferred
+      ? interaction.editReply.bind(interaction)
+      : interaction.reply.bind(interaction);
     if (character.free_company_id === CoTAPIId) {
       await replyFn({
         content: `${character.name} has been in the FC for approximately ${getNumberOFDays(character)} days`,
