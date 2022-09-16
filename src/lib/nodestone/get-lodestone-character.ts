@@ -18,7 +18,9 @@ async function getLodestoneCharacter({ apiId = '', name = '', exactMatch = true 
       // do nothing and pull fresh data
     }
     const character = await fetchLodestoneCharacter({ apiId });
-    void redisClient.set(lodestoneCharacterCacheKey, JSON.stringify(character), 'EX', ONE_HOUR_IN_SECONDS * 3);
+    if (character) {
+      void redisClient.set(lodestoneCharacterCacheKey, JSON.stringify(character), 'EX', ONE_HOUR_IN_SECONDS * 3);
+    }
     return character;
   }
   if (name) {
@@ -32,7 +34,9 @@ async function getLodestoneCharacter({ apiId = '', name = '', exactMatch = true 
       // do nothing and pull fresh data
     }
     const character = await fetchLodestoneCharacter({ name, exactMatch });
-    void redisClient.set(lodestoneCharacterCacheKey, JSON.stringify(character), 'EX', ONE_HOUR_IN_SECONDS * 3);
+    if (character.length) {
+      void redisClient.set(lodestoneCharacterCacheKey, JSON.stringify(character), 'EX', ONE_HOUR_IN_SECONDS * 3);
+    }
     return character;
   }
   throw new Error('Not Sure How You Got Here');

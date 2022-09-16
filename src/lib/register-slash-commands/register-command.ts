@@ -4,7 +4,7 @@ import { REST } from '@discordjs/rest';
 import type { RESTPostAPIApplicationCommandsJSONBody } from 'discord-api-types/v10';
 import type { SlashCommandRegistration } from '../../slash-commands/index.js';
 
-const { BOT_CLIENT_ID: DISCORD_TOKEN, BOT_CLIENT_SECRET: DISCORD_CLIENT_ID } = process.env;
+const { BOT_CLIENT_ID: DISCORD_CLIENT_ID, BOT_CLIENT_SECRET: DISCORD_TOKEN } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
   throw new Error('No Client ID Found');
 }

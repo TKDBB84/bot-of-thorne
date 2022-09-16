@@ -5,6 +5,7 @@ import dataSource from '../../data-source.js';
 import { SlashCommand } from '../../entities/index.js';
 import registerCommands from './register-command.js';
 import { registrationData } from '../../slash-commands/index.js';
+import logger from '../../logger.js';
 
 const commandRepo = dataSource.getRepository(SlashCommand);
 const registerSlashCommands: () => Promise<boolean> = async () => {
@@ -27,7 +28,13 @@ const registerSlashCommands: () => Promise<boolean> = async () => {
         }
       }
     }
-    await registerCommands(allToRegister);
+    if (allToRegister.length) {
+      logger.info('Commands To Be Registered: ', allToRegister.map((e) => e.registrationData.name))
+      await registerCommands(allToRegister);
+    } else {
+      console.trace('from where?')
+      logger.info('No Commands Need Updating')
+    }
   }
   return true;
 };

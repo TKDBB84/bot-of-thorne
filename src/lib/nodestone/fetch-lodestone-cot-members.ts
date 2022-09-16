@@ -1,5 +1,5 @@
 import type { XIVFreeCompanyMemberListEntry, XIVFreeCompanyResponseWithMembers } from './types.js';
-import axios from 'axios';
+import nodeStoneRequest from './request.js';
 import { CoTAPIId } from '../../consts.js';
 import { setTimeout } from 'node:timers/promises';
 
@@ -12,8 +12,8 @@ const fetchLodestoneCotMembers = async (
   }
   const {
     data: { FreeCompanyMembers },
-  } = await axios.get<XIVFreeCompanyResponseWithMembers>(`http://localhost:8080/freecompany/${CoTAPIId}`, {
-    params: { data: 'FCM', page },
+  } = await nodeStoneRequest.get<XIVFreeCompanyResponseWithMembers>(`/freecompany/${CoTAPIId}`, {
+    params: { data: 'FCM', Page: page },
   });
 
   await setTimeout(15000);

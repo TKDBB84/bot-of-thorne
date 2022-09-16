@@ -1,0 +1,14 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  db:
+    image: mariadb:10.3.34
+    restart: always
+    volumes:
+      - "/var/lib/mysql/data:${MARIADB_DATA_DIR}"
+      - "/var/lib/mysql/logs:${MARIADB_LOG_DIR}"
+      - /var/docker/mariadb/conf:/etc/mysql
+    environment:
+      MARIADB_DATABASE: 'cotbot'
+      MARIADB_ROOT_PASSWORD: "${TYPEORM_PASSWORD}"

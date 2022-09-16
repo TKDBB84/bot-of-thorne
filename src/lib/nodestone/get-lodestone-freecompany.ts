@@ -14,7 +14,9 @@ const getLodestoneFreecompany = async (apiId: string): Promise<XIVFreeCompany> =
     /* do nothing, just pull a fresh list */
   }
   const freshFCData = await fetchLodestoneFreecompany(apiId);
-  void redisClient.set(redisFCDataKey, JSON.stringify(freshFCData), 'EX', ONE_HOUR_IN_SECONDS * 6);
+  if (freshFCData) {
+    void redisClient.set(redisFCDataKey, JSON.stringify(freshFCData), 'EX', ONE_HOUR_IN_SECONDS * 6);
+  }
   return freshFCData;
 };
 

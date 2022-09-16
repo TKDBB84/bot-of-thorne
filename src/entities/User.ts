@@ -9,10 +9,10 @@ export default class User {
   @Column({ type: 'varchar', length: 14, default: 'Etc/UTC', nullable: false })
   public timezone = 'Etc/UTC';
 
-  @Column({ type: 'timestamp', default: 'NOW()', nullable: false })
+  @Column({ type: 'datetime', default: () => 'NOW()', nullable: false })
   public first_seen: Date = new Date();
 
-  @Column({ type: 'timestamp', default: 'NOW()', nullable: false, onUpdate: 'NOW()' })
+  @Column({ type: 'timestamp', default: () => 'NOW()', nullable: false, onUpdate: 'NOW()' })
   public last_seen: Date = new Date();
 
   public static async touch(id: string): Promise<User> {

@@ -18,7 +18,9 @@ const getLodestoneCotMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMem
     }
   }
   const freshMemberList = await fetchLodestoneCotMembers();
-  void redisClient.set(redisMemberListKey, JSON.stringify(freshMemberList), 'EX', ONE_HOUR_IN_SECONDS * 6);
+  if (freshMemberList.length) {
+    void redisClient.set(redisMemberListKey, JSON.stringify(freshMemberList), 'EX', ONE_HOUR_IN_SECONDS * 6);
+  }
   return freshMemberList;
 };
 

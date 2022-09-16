@@ -2,9 +2,9 @@ import 'reflect-metadata';
 import { Client, GatewayIntentBits, IntentsBitField, Interaction } from 'discord.js';
 import allCommands from './slash-commands/index.js';
 import { GuildIds, noop } from './consts.js';
-import redisClient from './redisClient.js';
+// import redisClient from './redisClient.js';
 import logger from './logger.js';
-import sassybotCommands from './sassybot-commands/index.js';
+// import sassybotCommands from './sassybot-commands/index.js';
 import { User } from './entities/index.js';
 import { Cron } from 'croner';
 import allCronJobs from './cron-jobs/index.js';
@@ -15,18 +15,18 @@ export interface BotCronJob {
   exec: (discordClient: Client) => void | Promise<void>;
 }
 
-type SassybotEvent = SassybotDaysEvent;
-type SassybotDaysEvent = {
-  eventName: 'daysRequest';
-  isOfficerQuery: boolean;
-  numDays: number;
-  charName: string;
-  authorId: string;
-  channelId: string;
-  messageId: string;
-};
+// type SassybotEvent = SassybotDaysEvent;
+// type SassybotDaysEvent = {
+//   eventName: 'daysRequest';
+//   isOfficerQuery: boolean;
+//   numDays: number;
+//   charName: string;
+//   authorId: string;
+//   channelId: string;
+//   messageId: string;
+// };
 
-const { BOT_CLIENT_ID: DISCORD_TOKEN, BOT_CLIENT_SECRET: DISCORD_CLIENT_ID } = process.env;
+const { BOT_CLIENT_ID: DISCORD_CLIENT_ID, BOT_CLIENT_SECRET: DISCORD_TOKEN } = process.env;
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
   throw new Error('MISSING REQUIRED ENV VARIABLES');
 }
@@ -47,7 +47,6 @@ const allIntents = new IntentsBitField([
   GatewayIntentBits.DirectMessages,
   GatewayIntentBits.DirectMessageReactions,
   GatewayIntentBits.DirectMessageTyping,
-  GatewayIntentBits.MessageContent,
   GatewayIntentBits.GuildScheduledEvents,
 ]);
 
@@ -76,34 +75,34 @@ discordClient.on('guildMemberAdd', (member) => {
 });
 
 // register sassybot listeners
-await redisClient.subscribe('sassybot-events', (err) => {
-  if (err) {
-    logger.error('error subscribing to reids', err);
-    throw err;
-  }
-  logger.debug('Subscribed to Sassybot Events');
-});
-
-redisClient.on('message', (channel: string, message: string) => {
-  if (channel.toLowerCase() !== 'sassybot-events') {
-    return;
-  }
-  let sentObject: SassybotEvent;
-  try {
-    sentObject = JSON.parse(message) as SassybotEvent;
-  } catch (e: unknown) {
-    logger.error('None JSON message From Sassybot', { message, error: e });
-    return;
-  }
-  if (sentObject?.eventName) {
-    const matchingCommand = sassybotCommands.find(
-      (sassybotCommand) => sassybotCommand.eventName === sentObject.eventName,
-    );
-    if (matchingCommand) {
-      void matchingCommand.exec(discordClient, sentObject);
-    }
-  }
-});
+// await redisClient.subscribe('sassybot-events', (err) => {
+//   if (err) {
+//     logger.error('error subscribing to reids', err);
+//     throw err;
+//   }
+//   logger.debug('Subscribed to Sassybot Events');
+// });
+//
+// redisClient.on('message', (channel: string, message: string) => {
+//   if (channel.toLowerCase() !== 'sassybot-events') {
+//     return;
+//   }
+//   let sentObject: SassybotEvent;
+//   try {
+//     sentObject = JSON.parse(message) as SassybotEvent;
+//   } catch (e: unknown) {
+//     logger.error('None JSON message From Sassybot', { message, error: e });
+//     return;
+//   }
+//   if (sentObject?.eventName) {
+//     const matchingCommand = sassybotCommands.find(
+//       (sassybotCommand) => sassybotCommand.eventName === sentObject.eventName,
+//     );
+//     if (matchingCommand) {
+//       void matchingCommand.exec(discordClient, sentObject);
+//     }
+//   }
+// });
 
 const start = async () => {
   const uniqueCommandNames = new Set<string>();

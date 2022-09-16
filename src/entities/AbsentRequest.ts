@@ -6,7 +6,7 @@ export default class AbsentRequest {
   @PrimaryGeneratedColumn({ type: 'int' })
   public id: number;
 
-  @CreateDateColumn({ type: 'timestamp', default: 'NOW()', nullable: false })
+  @CreateDateColumn({ type: 'datetime', default: () => 'NOW()', nullable: false })
   public date_requested: Date = new Date();
 
   @Column({ type: 'date', nullable: false })

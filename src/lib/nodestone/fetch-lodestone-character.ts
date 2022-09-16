@@ -6,7 +6,7 @@ import type {
   XIVCharacterResponse,
   XIVCharacterSearchResponse,
 } from './types.js';
-import axios from 'axios';
+import nodeStoneRequest from './request.js';
 import getLodestoneCharacter from './get-lodestone-character.js';
 
 async function fetchCharacterListPages(
@@ -14,8 +14,8 @@ async function fetchCharacterListPages(
   page = 1,
   charList: XIVCharacterBase[] = [],
 ): Promise<XIVCharacterBase[]> {
-  const { data } = await axios.get<XIVCharacterSearchResponse>(`http://localhost:8080/character/search`, {
-    params: { name, server: 'Jenova', page },
+  const { data } = await nodeStoneRequest.get<XIVCharacterSearchResponse>('/character/search', {
+    params: { name, server: 'Jenova', Page: page },
   });
   charList.concat(data.List);
   if (data.Pagination.PageNext) {
@@ -28,7 +28,7 @@ function fetchLodestoneCharacter({ apiId }: SearchByIdParam): Promise<XIVCharact
 function fetchLodestoneCharacter({ name, exactMatch }: SearchByNameParam): Promise<XIVCharacter[]>;
 async function fetchLodestoneCharacter({ apiId = '', name = '', exactMatch = true }) {
   if (apiId) {
-    const { data } = await axios.get<XIVCharacterResponse>(`http://localhost:8080/character/${apiId}`, {
+    const { data } = await nodeStoneRequest.get<XIVCharacterResponse>(`/character/${apiId}`, {
       params: { data: 'FC' },
     });
     return data.Character;

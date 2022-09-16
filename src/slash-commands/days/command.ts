@@ -31,7 +31,7 @@ const command: SlashCommandCallback = {
     const focusedOption = interaction.options.getFocused();
     const allCharacter = await characterRepo
       .createQueryBuilder()
-      .where({ name: Like(focusedOption) })
+      .where({ name: Like(`${focusedOption}%`) })
       .getMany();
     const choices = allCharacter.map((char) => ({ name: char.name, value: char.id.toString() }));
 
@@ -53,16 +53,18 @@ const command: SlashCommandCallback = {
     const characterId = providedCharacter.value;
     await User.touch(discordId);
     let character: Character | null;
-
-    if (Number.isInteger(characterId)) {
+    if (Number.isInteger(+characterId)) {
       character = await characterRepo.findOneBy({ id: +characterId });
     } else {
       character = await characterRepo.findOneBy({ name: Like(characterId.toString()) });
     }
     if (!character) {
+      await interaction.deferReply();
+      console.log({providedCharacter})
       const characterList = await getLodestoneCharacter({ name: characterId.toString() });
+      console.log({characterList})
       if (characterList.length === 0) {
-        await interaction.reply({
+        await interaction.editReply({
           content: `Sorry I have no record of ${characterId.toString()} in the FC nor on Jenova in the Lodestone`,
         });
         return;
@@ -87,25 +89,25 @@ const command: SlashCommandCallback = {
           throw new Error('Found but not found?');
         }
       } else {
-        await interaction.reply(
-          'Multiple Characters Match This Name On Jenova, Please use /claim to claim the correct one',
-        );
+        await interaction.editReply('Multiple Characters Match This Name On Jenova... somehow');
         return;
       }
     }
 
     if (character.free_company_id && !character.free_company_name) {
+      await interaction.deferReply();
       const fcData = await getLodestoneFreecompany(character.free_company_id);
       await characterRepo.update(character.id, { free_company_name: fcData.Name });
       character.free_company_name = fcData.Name;
     }
 
+    const replyFn = interaction.deferred ? interaction.editReply : interaction.reply;
     if (character.free_company_id === CoTAPIId) {
-      await interaction.reply({
+      await replyFn({
         content: `${character.name} has been in the FC for approximately ${getNumberOFDays(character)} days`,
       });
     } else {
-      await interaction.reply(
+      await replyFn(
         `${character.name} appears to be a member of ${
           character.free_company_name ? character.free_company_name : 'No'
         } Freecompany, I only track Crowne of Thorne Members.`,

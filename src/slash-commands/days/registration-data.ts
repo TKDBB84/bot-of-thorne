@@ -4,8 +4,8 @@ import type { SlashCommandRegistration } from '../types.js';
 const commandName = 'days';
 
 const registrationData: SlashCommandRegistration = {
-  readyToRegister: false,
-  scope: 'COT',
+  readyToRegister: true,
+  scope: 'STS',
   registrationData: new SlashCommandBuilder()
     .setName(commandName)
     .setDescription("Returns the approximate number of days you've been in the FC")

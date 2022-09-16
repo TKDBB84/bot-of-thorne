@@ -43,7 +43,7 @@ export default class Character {
   })
   public rank: CotRanks = CotRanks.NEW;
 
-  @Column({ type: 'timestamp', nullable: true, default: null })
+  @Column({ type: 'datetime', nullable: true, default: null })
   public last_promotion: Date | null;
 
   @OneToMany(() => PromotionRequest, (promotion) => promotion.character, { nullable: true })

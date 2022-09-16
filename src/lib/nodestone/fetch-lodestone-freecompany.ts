@@ -1,8 +1,8 @@
 import type { XIVFreeCompany, XIVFreeCompanyResponse } from './types.js';
-import axios from 'axios';
+import nodeStoneRequest from './request.js';
 
 const fetchLodestoneFreecompany = async (apiId: string): Promise<XIVFreeCompany> => {
-  const { data } = await axios.get<XIVFreeCompanyResponse>(`http://localhost:8080/freecompany/${apiId}`);
+  const { data } = await nodeStoneRequest.get<XIVFreeCompanyResponse>(`/freecompany/${apiId}`);
   return data.FreeCompany;
 };
 
