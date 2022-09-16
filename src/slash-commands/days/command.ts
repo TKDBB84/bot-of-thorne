@@ -1,13 +1,14 @@
 import type { SlashCommandCallback } from '../types.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 import commandRegistrationData from './registration-data.js';
 import dayjs from 'dayjs';
 import dataSource from '../../data-source.js';
 import { Character, User } from '../../entities/index.js';
-import type { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import { CoTAPIId, GuildIds } from '../../consts.js';
 import { Like } from 'typeorm';
 import { getLodestoneCharacter, getLodestoneFreecompany } from '../../lib/nodestone/index.js';
 import logger from '../../logger.js';
+import autocomplete from './autocomplete.js';
 
 const characterRepo = dataSource.getRepository(Character);
 
@@ -23,16 +24,7 @@ const getNumberOFDays = ({ first_seen_in_fc }: { first_seen_in_fc: Date | null }
 
 const command: SlashCommandCallback = {
   command: commandRegistrationData.registrationData.name,
-  async autocomplete(interaction: AutocompleteInteraction): Promise<void> {
-    const focusedOption = interaction.options.getFocused();
-    const allCharacter = await characterRepo
-      .createQueryBuilder()
-      .where({ name: Like(`${focusedOption}%`) })
-      .getMany();
-    const choices = allCharacter.map((char) => ({ name: char.name, value: char.id.toString() }));
-
-    await interaction.respond(choices);
-  },
+  autocomplete,
   async exec(interaction: ChatInputCommandInteraction): Promise<void> {
     if (
       !interaction.inGuild() ||
