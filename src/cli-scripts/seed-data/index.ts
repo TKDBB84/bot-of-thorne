@@ -1,7 +1,8 @@
 import dataSource from '../../data-source.js';
 import logger from '../../logger.js';
 import { Character /*, User */ } from '../../entities/index.js';
-import toons from './ffxiv-char-data.js';
+import dayjs from 'dayjs';
+import { CoTAPIId } from '../../consts.js';
 // import users from './user-data.js';
 
 const charRepo = dataSource.getRepository(Character);
@@ -18,18 +19,18 @@ async function main() {
   // }
   // await userRepo.save(newUsers);
 
-  const newToons: Character[] = [];
-  for (const toon of toons) {
-    newToons.push(
-      charRepo.create({
-        apiId: toon.apiId.toString(),
-        name: toon.name,
-        first_seen_in_fc: toon.firstSeenApi,
-        last_seen_in_fc: toon.lastSeenApi,
-      }),
-    );
+  const allChars = await charRepo.find()
+  const toUpdate: Character[] = []
+  for (const char of allChars) {
+    const shouldBeLastSeen = dayjs(new Date('2022-09-15'))
+    const thisLastSeen = dayjs(char.last_seen_in_fc)
+    if (thisLastSeen.isAfter(shouldBeLastSeen)) {
+      char.free_company_id = CoTAPIId
+      char.free_company_name = 'Crowne of Thorne'
+      toUpdate.push(char)
+    }
   }
-  await charRepo.save(newToons)
+  await charRepo.save(toUpdate)
 }
 
 main()

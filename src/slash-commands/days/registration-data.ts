@@ -5,7 +5,7 @@ const commandName = 'days';
 
 const registrationData: SlashCommandRegistration = {
   readyToRegister: true,
-  scope: 'STS',
+  scope: 'COT',
   registrationData: new SlashCommandBuilder()
     .setName(commandName)
     .setDescription("Returns the approximate number of days you've been in the FC")

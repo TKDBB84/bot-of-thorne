@@ -100,17 +100,15 @@ const command: SlashCommandCallback = {
     const replyFn = interaction.deferred
       ? interaction.editReply.bind(interaction)
       : interaction.reply.bind(interaction);
+    let content: string;
     if (character.free_company_id === CoTAPIId) {
-      await replyFn({
-        content: `${character.name} has been in the FC for approximately ${getNumberOFDays(character)} days`,
-      });
+      content = `${character.name} has been in the FC for approximately ${getNumberOFDays(character)} days`;
     } else {
-      await replyFn(
-        `${character.name} appears to be a member of ${
-          character.free_company_name ? character.free_company_name : 'No'
-        } Freecompany, I only track Crowne of Thorne Members.`,
-      );
+      content = `${character.name} appears to be a member of ${
+        character.free_company_name ? character.free_company_name : 'No'
+      } Free Company, I only track Crowne of Thorne Members.`;
     }
+    await replyFn(content);
     return;
   },
 };
