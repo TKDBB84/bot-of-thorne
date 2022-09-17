@@ -13,7 +13,9 @@ const registerSlashCommands: () => Promise<boolean> = async () => {
   const allToRegister: SlashCommandRegistration[] = [];
   for (const registrationDatum of registrationData) {
     if (registrationDatum.readyToRegister) {
-      const checksum = createHash('sha1').update(registrationDatum.registrationData.toString(), 'utf8').digest('hex');
+      const checksum = createHash('sha1')
+        .update(JSON.stringify(registrationDatum.registrationData), 'utf8')
+        .digest('hex');
       const command = allRegisteredSlashCommands.find(
         (_command) => _command.commandName === registrationDatum.registrationData.name,
       );
