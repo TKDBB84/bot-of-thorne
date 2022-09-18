@@ -108,7 +108,7 @@ jobs:
       contents: write
     steps:
       - name: automerge
-        uses: fastify/github-action-merge-dependabot@v3.2.0
+        uses: fastify/github-action-merge-dependabot@v3.3.1
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
 

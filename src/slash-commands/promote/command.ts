@@ -1,29 +1,17 @@
-import type { SlashCommandCallback } from '../types.js';
 import type { ChatInputCommandInteraction } from 'discord.js';
-import commandRegistrationData from './registration-data.js';
-import dayjs from 'dayjs';
-import dataSource from '../../data-source.js';
-import { Character, User } from '../../entities/index.js';
+import type { SlashCommandCallback } from '../types.js';
+import registrationData from './registration-data.js';
+import autocomplete from './autocomplete.js';
 import { CoTAPIId, GuildIds } from '../../consts.js';
+import { Character, User } from '../../entities/index.js';
 import { Like } from 'typeorm';
 import { getLodestoneCharacter, getLodestoneFreecompany } from '../../lib/nodestone/index.js';
 import logger from '../../logger.js';
-import autocomplete from './autocomplete.js';
-
-const characterRepo = dataSource.getRepository(Character);
-
-const getNumberOFDays = ({ first_seen_in_fc }: { first_seen_in_fc: Date | null }): number => {
-  const firstSeen = dayjs(first_seen_in_fc);
-  const firstPull = dayjs(new Date(2019, 9, 11, 23, 59, 59));
-
-  if (firstSeen.isBefore(firstPull)) {
-    return dayjs().diff(firstPull, 'd') + 1;
-  }
-  return dayjs().diff(firstSeen, 'd') + 1;
-};
+import dataSource from '../../data-source.js';
+const characterRepo = dataSource.getRepository(Character)
 
 const command: SlashCommandCallback = {
-  command: commandRegistrationData.registrationData.name,
+  command: registrationData.registrationData.name,
   autocomplete,
   async exec(interaction: ChatInputCommandInteraction): Promise<void> {
     if (
@@ -77,6 +65,7 @@ const command: SlashCommandCallback = {
             );
             return;
           }
+          await interaction.editReply('I have');
         } else {
           logger.error('Found but not found?', { characterList, foundChar, characterId });
           throw new Error('Found but not found?');
@@ -99,14 +88,7 @@ const command: SlashCommandCallback = {
     const replyFn = interaction.deferred
       ? interaction.editReply.bind(interaction)
       : interaction.reply.bind(interaction);
-    let content: string;
-    if (character.free_company_id === CoTAPIId) {
-      content = `${character.name} has been in the FC for approximately ${getNumberOFDays(character)} days`;
-    } else {
-      content = `${character.name} appears to be a member of ${
-        character.free_company_name ? character.free_company_name : 'No'
-      } Free Company, I only track Crowne of Thorne Members.`;
-    }
+    let content: string = 'something something'
     await replyFn(content);
     return;
   },
