@@ -8,7 +8,7 @@ import { Like } from 'typeorm';
 import { getLodestoneCharacter, getLodestoneFreecompany } from '../../lib/nodestone/index.js';
 import logger from '../../logger.js';
 import dataSource from '../../data-source.js';
-const characterRepo = dataSource.getRepository(Character)
+const characterRepo = dataSource.getRepository(Character);
 
 const command: SlashCommandCallback = {
   command: registrationData.registrationData.name,
@@ -88,7 +88,7 @@ const command: SlashCommandCallback = {
     const replyFn = interaction.deferred
       ? interaction.editReply.bind(interaction)
       : interaction.reply.bind(interaction);
-    let content: string = 'something something'
+    const content = 'something something';
     await replyFn(content);
     return;
   },
