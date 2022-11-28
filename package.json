@@ -29,7 +29,7 @@
     "@tsconfig/node18-strictest-esm": "^1.0.1",
     "@types/jest": "^29.2.3",
     "@types/node": "^18.11.9",
-    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
     "@typescript-eslint/parser": "^5.44.0",
     "babel-jest": "^29.3.0",
     "discord-api-types": "^0.37.20",
