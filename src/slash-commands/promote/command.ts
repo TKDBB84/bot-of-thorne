@@ -22,12 +22,12 @@ const command: SlashCommandCallback = {
     }
 
     const discordId = interaction.member.user.id;
+    await User.touch(discordId);
     const providedCharacter = interaction.options.get('character_name');
     if (!providedCharacter || !providedCharacter.value) {
       return;
     }
     const characterId = providedCharacter.value;
-    await User.touch(discordId);
     let character: Character | null;
     if (Number.isInteger(+characterId)) {
       character = await characterRepo.findOneBy({ id: +characterId });

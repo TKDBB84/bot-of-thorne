@@ -7,7 +7,7 @@ import { CoTAPIId, ONE_HOUR_IN_SECONDS } from '../../consts.js';
 
 const characterRepo = dataSource.getRepository(Character);
 const autocomplete = async (interaction: AutocompleteInteraction): Promise<void> => {
-  void User.touch(interaction.user.id);
+  await User.touch(interaction.user.id);
   const partialCharName = interaction.options.getFocused();
   const nameSearch = `${partialCharName}%`;
   const cacheKey = `Promote:Autocomplete:${nameSearch}`;

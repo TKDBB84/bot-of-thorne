@@ -1,5 +1,5 @@
-import pingCommand from './command.js';
-import pingRegistrationData from './registration-data.js';
+import promoteCommand from './command.js';
+import promoteRegistrationData from './registration-data.js';
 
-export const command = pingCommand;
-export const registrationData = pingRegistrationData;
+export const command = promoteCommand;
+export const registrationData = promoteRegistrationData;
