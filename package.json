@@ -32,7 +32,7 @@
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "babel-jest": "^29.4.3",
-    "discord-api-types": "^0.37.34",
+    "discord-api-types": "^0.37.35",
     "eslint": "^8.34.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-import-resolver-typescript": "^3.5.3",
