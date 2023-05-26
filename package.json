@@ -17,7 +17,7 @@
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.16",
-    "winston": "^3.8.2",
+    "winston": "^3.9.0",
     "winston-console-format": "^1.0.8"
   },
   "description": "Crowne of Thorne Management Bot",
