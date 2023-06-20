@@ -16,7 +16,7 @@
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.16",
+    "typeorm": "^0.3.17",
     "winston": "^3.9.0",
     "winston-console-format": "^1.0.8"
   },
