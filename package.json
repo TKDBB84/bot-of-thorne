@@ -10,7 +10,7 @@
     "@discordjs/rest": "^1.7.0",
     "axios": "^1.4.0",
     "croner": "^6.0.5",
-    "dayjs": "^1.11.8",
+    "dayjs": "^1.11.9",
     "discord.js": "^14.11.0",
     "ioredis": "^5.3.2",
     "moment": "^2.29.4",
