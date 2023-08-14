@@ -9,7 +9,7 @@
   "dependencies": {
     "@discordjs/rest": "^2.0.0",
     "axios": "^1.4.0",
-    "croner": "^6.0.7",
+    "croner": "^7.0.0",
     "dayjs": "^1.11.9",
     "discord.js": "^14.11.0",
     "ioredis": "^5.3.2",
