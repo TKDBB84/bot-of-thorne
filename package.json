@@ -23,7 +23,7 @@
   "description": "Crowne of Thorne Management Bot",
   "main": "index.js",
   "devDependencies": {
-    "@babel/core": "^7.22.17",
+    "@babel/core": "^7.22.19",
     "@babel/preset-env": "^7.22.15",
     "@babel/preset-typescript": "^7.22.15",
     "@tsconfig/node18-strictest-esm": "^1.0.1",
