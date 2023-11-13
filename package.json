@@ -7,7 +7,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@discordjs/rest": "^2.0.1",
+    "@discordjs/rest": "^2.1.0",
     "axios": "^1.6.1",
     "croner": "^7.0.4",
     "dayjs": "^1.11.10",
