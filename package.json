@@ -15,7 +15,7 @@
     "ioredis": "^5.3.2",
     "moment": "^2.29.4",
     "mysql": "^2.18.1",
-    "reflect-metadata": "^0.1.14",
+    "reflect-metadata": "^0.2.1",
     "typeorm": "^0.3.17",
     "winston": "^3.11.0",
     "winston-console-format": "^1.0.8"
