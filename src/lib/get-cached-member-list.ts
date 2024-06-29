@@ -8,12 +8,11 @@ import { CACHE_KEYS } from '../consts.js';
 export type AutocompleteCharacterList = Array<{
   name: string;
   value: string;
-}>
+}>;
 
 const characterRepo = dataSource.getRepository(Character);
 
 async function getCachedMemberList(partialName = ''): Promise<AutocompleteCharacterList> {
-
   const nameSearch = `${partialName}%`;
   const cacheKey = `${CACHE_KEYS.AUTO_COMPLETE.FC_MEMBER.SEARCH}:${nameSearch}`;
 
@@ -22,7 +21,7 @@ async function getCachedMemberList(partialName = ''): Promise<AutocompleteCharac
     if (charListString) {
       const charList = JSON.parse(charListString) as Array<{ name: string; value: string }>;
       if (charList?.length) {
-        return charList
+        return charList;
       }
     }
   } catch {
@@ -42,7 +41,7 @@ async function getCachedMemberList(partialName = ''): Promise<AutocompleteCharac
     void redisClient.set(cacheKey, JSON.stringify(choices), 'EX', ONE_HOUR_IN_SECONDS);
   }
 
-  return choices
+  return choices;
 }
 
 export default getCachedMemberList;

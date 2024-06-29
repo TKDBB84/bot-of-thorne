@@ -22,6 +22,8 @@
   "main": "index.js",
   "devDependencies": {
     "@babel/core": "^7.24.7",
+    "@babel/eslint-parser": "^7.24.7",
+    "@babel/plugin-syntax-import-assertions": "^7.24.7",
     "@babel/preset-env": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@eslint/js": "^9.5.0",
@@ -44,8 +46,8 @@
   "scripts": {
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint -c .eslintrc.json --ext .ts src",
-    "lint:fix": "eslint --fix -c .eslintrc.json --ext .ts src",
+    "lint": "eslint src",
+    "lint:fix": "eslint --fix src",
     "test": "jest",
     "start:local": "tsc-watch --onSuccess \"node dist/index.js\"",
     "start": "npm run build-watch && node --watch dist/index.js"

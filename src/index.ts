@@ -43,7 +43,6 @@ const allIntents = new IntentsBitField([
   GatewayIntentBits.DirectMessagePolls,
 ]);
 
-
 const discordClient = new Client({ intents: allIntents });
 
 void discordClient.login(DISCORD_TOKEN);
@@ -72,7 +71,7 @@ discordClient.on('guildMemberAdd', (member) => {
   void User.touch(member.id);
 });
 
-discordClient.on(Events.ClientReady, readyClient => {
+discordClient.on(Events.ClientReady, (readyClient) => {
   logger.info('client ready...');
   void start(readyClient)
     .then(() => {
@@ -81,9 +80,8 @@ discordClient.on(Events.ClientReady, readyClient => {
     .catch((e) => {
       logger.error('Error Starting Bot', e);
       throw e;
-
     });
-})
+});
 
 const start = async (readyClient: Client<true>) => {
   logger.debug('!!!Starting Bot...');
@@ -110,4 +108,3 @@ const start = async (readyClient: Client<true>) => {
     );
   });
 };
-

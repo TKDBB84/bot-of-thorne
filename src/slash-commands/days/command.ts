@@ -35,19 +35,18 @@ const command: SlashCommandCallback = {
     }
     User.touchInBackground(interaction.user.id);
 
-    const discordId = interaction.member.user.id;
     const providedCharacter = interaction.options.get('character_name');
     if (!providedCharacter || !providedCharacter.value) {
       return;
     }
     const characterId = providedCharacter.value as string | number;
 
-    let charParams: FindOptionsWhere<Character> = { id: +characterId }
+    let charParams: FindOptionsWhere<Character> = { id: +characterId };
     if (!Number.isInteger(charParams.id)) {
       charParams = { name: Like(characterId.toString()) };
     }
 
-    let character = await characterRepo.findOneBy(charParams)
+    let character = await characterRepo.findOneBy(charParams);
     if (!character) {
       await interaction.deferReply();
       const characterList = await getLodestoneCharacter({ name: characterId.toString() });

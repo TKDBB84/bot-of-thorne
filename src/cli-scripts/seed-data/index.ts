@@ -6,8 +6,8 @@ import updateNonMembers from '../../cron-jobs/update-fc-members/clean-up-old-mem
 async function main() {
   // use this if you want to seed data, or something
   const memberList = await getLodestoneCotMembers();
-  logger.info('Got Member List', memberList.length, {memberList})
-  console.log({memberList})
+  logger.info('Got Member List', memberList.length, { memberList });
+  console.log({ memberList });
   await saveMembersToCharacters(memberList);
   await updateNonMembers(memberList);
 }
