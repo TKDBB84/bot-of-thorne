@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { Client, GatewayIntentBits, IntentsBitField, Interaction } from 'discord.js';
+import { Events, Client, GatewayIntentBits, IntentsBitField, Interaction } from 'discord.js';
 import allCommands from './slash-commands/index.js';
 import { GuildIds } from './consts.js';
 import logger from './logger.js';
@@ -17,11 +17,12 @@ const { BOT_CLIENT_ID: DISCORD_CLIENT_ID, BOT_CLIENT_SECRET: DISCORD_TOKEN } = p
 if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
   throw new Error('MISSING REQUIRED ENV VARIABLES');
 }
+logger.info('Starting Bot...');
 
 const allIntents = new IntentsBitField([
   GatewayIntentBits.Guilds,
   GatewayIntentBits.GuildMembers,
-  GatewayIntentBits.GuildBans,
+  GatewayIntentBits.GuildModeration,
   GatewayIntentBits.GuildEmojisAndStickers,
   GatewayIntentBits.GuildIntegrations,
   GatewayIntentBits.GuildWebhooks,
@@ -34,10 +35,20 @@ const allIntents = new IntentsBitField([
   GatewayIntentBits.DirectMessages,
   GatewayIntentBits.DirectMessageReactions,
   GatewayIntentBits.DirectMessageTyping,
+  // GatewayIntentBits.MessageContent,
   GatewayIntentBits.GuildScheduledEvents,
+  GatewayIntentBits.AutoModerationConfiguration,
+  GatewayIntentBits.AutoModerationExecution,
+  GatewayIntentBits.GuildMessagePolls,
+  GatewayIntentBits.DirectMessagePolls,
 ]);
 
+
 const discordClient = new Client({ intents: allIntents });
+
+void discordClient.login(DISCORD_TOKEN);
+logger.info('login queued...');
+
 discordClient.on('interactionCreate', async (interaction: Interaction) => {
   if (!interaction.isChatInputCommand() && !interaction.isAutocomplete()) return;
 
@@ -61,8 +72,21 @@ discordClient.on('guildMemberAdd', (member) => {
   void User.touch(member.id);
 });
 
-const start = async () => {
-  logger.debug('Starting Bot...');
+discordClient.on(Events.ClientReady, readyClient => {
+  logger.info('client ready...');
+  void start(readyClient)
+    .then(() => {
+      logger.info('Bot Started');
+    })
+    .catch((e) => {
+      logger.error('Error Starting Bot', e);
+      throw e;
+
+    });
+})
+
+const start = async (readyClient: Client<true>) => {
+  logger.debug('!!!Starting Bot...');
   const uniqueCommandNames = new Set<string>();
   allCommands.forEach(({ command }) => {
     uniqueCommandNames.add(command);
@@ -74,7 +98,6 @@ const start = async () => {
   logger.debug('Registering Slash Commands...');
   await registerSlashCommands();
   logger.debug('Logging Into Discord...');
-  await discordClient.login(DISCORD_TOKEN);
 
   logger.debug('Scheduling CronJobs...');
   allCronJobs.forEach((job) => {
@@ -83,16 +106,8 @@ const start = async () => {
       {
         timezone: 'America/New_York',
       },
-      job.exec.bind(job, discordClient),
+      job.exec.bind(job, readyClient),
     );
   });
 };
 
-void start()
-  .then(() => {
-    logger.info('Bot Started');
-  })
-  .catch((e) => {
-    logger.error('Error Starting Bot', e);
-    throw e;
-  });

@@ -13,10 +13,10 @@ const fetchLodestoneCotMembers = async (
   const {
     data: { FreeCompanyMembers },
   } = await nodeStoneRequest.get<XIVFreeCompanyResponseWithMembers>(`/freecompany/${CoTAPIId}`, {
-    params: { data: 'FCM', Page: page },
+    params: { data: 'FCM', page },
   });
 
-  await setTimeout(15000);
+  await setTimeout(150);
   return fetchLodestoneCotMembers(FreeCompanyMembers.Pagination.PageNext, members.concat(FreeCompanyMembers.List));
 };
 

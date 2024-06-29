@@ -26,4 +26,9 @@ export default class User {
     }
     return user;
   }
+
+  public static touchInBackground(id: string): void {
+   queueMicrotask(() => User.touch(id));
+  }
+
 }

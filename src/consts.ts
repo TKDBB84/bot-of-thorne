@@ -74,6 +74,14 @@ export enum EVENT_REPEATING_TYPE {
   MONTHLY,
 }
 
+export const CACHE_KEYS = {
+    AUTO_COMPLETE: {
+      FC_MEMBER: {
+        SEARCH: 'AUTO_COMPLETE:FC_MEMBER:SEARCH'
+      },
+    },
+  };
+
 export const affirmativeResponses = ['yes', 'y', 'yup', 'sure', 'ye', 'yeah', 'si', 'yah', 'yea', 'yi', 'ye'];
 
 export const noop: () => void = () => {

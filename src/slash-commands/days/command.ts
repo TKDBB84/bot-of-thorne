@@ -9,6 +9,7 @@ import { Like } from 'typeorm';
 import { getLodestoneCharacter, getLodestoneFreecompany } from '../../lib/nodestone/index.js';
 import logger from '../../logger.js';
 import autocomplete from './autocomplete.js';
+import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere.js';
 
 const characterRepo = dataSource.getRepository(Character);
 
@@ -32,26 +33,27 @@ const command: SlashCommandCallback = {
     ) {
       return;
     }
+    User.touchInBackground(interaction.user.id);
 
     const discordId = interaction.member.user.id;
     const providedCharacter = interaction.options.get('character_name');
     if (!providedCharacter || !providedCharacter.value) {
       return;
     }
-    const characterId = providedCharacter.value;
-    await User.touch(discordId);
-    let character: Character | null;
-    if (Number.isInteger(+characterId)) {
-      character = await characterRepo.findOneBy({ id: +characterId });
-    } else {
-      character = await characterRepo.findOneBy({ name: Like(characterId.toString()) });
+    const characterId = providedCharacter.value as string | number;
+
+    let charParams: FindOptionsWhere<Character> = { id: +characterId }
+    if (!Number.isInteger(charParams.id)) {
+      charParams = { name: Like(characterId.toString()) };
     }
+
+    let character = await characterRepo.findOneBy(charParams)
     if (!character) {
       await interaction.deferReply();
       const characterList = await getLodestoneCharacter({ name: characterId.toString() });
       if (characterList.length === 0) {
         await interaction.editReply({
-          content: `Sorry I have no record of ${characterId.toString()} in the FC nor on Jenova in the Lodestone`,
+          content: `Sorry I cant find a record of ${characterId.toString()} in the FC nor on Jenova in the Lodestone`,
         });
         return;
       } else if (characterList.length === 1) {

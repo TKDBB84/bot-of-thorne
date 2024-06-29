@@ -1,14 +1,58 @@
 # Use root/example as user/password credentials
-version: '3.1'
 
 services:
   db:
-    image: mariadb:10.3.34
-    restart: always
+    image: mariadb:11.4.2
+    restart: unless-stopped
     volumes:
-      - "/var/lib/mysql/data:${MARIADB_DATA_DIR}"
-      - "/var/lib/mysql/logs:${MARIADB_LOG_DIR}"
-      - /var/docker/mariadb/conf:/etc/mysql
+      - "${MARIADB_DATA_DIR}:/var/lib/mysql"
+      - "${MARIADB_CONFIG_DIR}:/etc/mysql/conf.d"
     environment:
-      MARIADB_DATABASE: 'cotbot'
-      MARIADB_ROOT_PASSWORD: "${TYPEORM_PASSWORD}"
+      - MARIADB_USER=cotbot
+      - MARIADB_PASSWORD=localhost-password
+      - MARIADB_LOCALHOST_USER=1
+      - MARIADB_RANDOM_ROOT_PASSWORD=1
+      - MARIADB_DATABASE=cotbot
+      - MARIADB_MYSQL_LOCALHOST_USER=true
+    ports:
+      - '3306:3306'
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+  redis:
+    image: redis:7.2.5
+    restart: unless-stopped
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+      start_period: 5s
+      interval: 3s
+      timeout: 2s
+      retries: 3
+    ports:
+      - '6379:6379'
+  nodestone:
+    image: nodestone
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+#  cotbot:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    restart: no
+#    links:
+#      - db
+#      - redis
+#    environment:
+#      - BOT_CLIENT_SECRET=${BOT_CLIENT_SECRET}
+#      - BOT_CLIENT_ID=${BOT_CLIENT_ID}
+#    depends_on:
+#      db:
+#        condition: service_healthy
+#      redis:
+#        condition: service_healthy
+#      nodestone:
+#        condition: service_started

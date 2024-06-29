@@ -22,7 +22,7 @@ const command: SlashCommandCallback = {
     }
 
     const discordId = interaction.member.user.id;
-    await User.touch(discordId);
+    User.touchInBackground(interaction.user.id);
     const providedCharacter = interaction.options.get('character_name');
     if (!providedCharacter || !providedCharacter.value) {
       return;

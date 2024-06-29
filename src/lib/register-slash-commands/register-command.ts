@@ -10,7 +10,7 @@ if (!DISCORD_CLIENT_ID || !DISCORD_TOKEN) {
 }
 
 const registerCommands = async (commands: SlashCommandRegistration[]): Promise<void> => {
-  const rest = new REST({ version: '10' }).setToken(DISCORD_TOKEN);
+  const rest = new REST().setToken(DISCORD_TOKEN);
 
   const COTCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
   const STSCommands: RESTPostAPIApplicationCommandsJSONBody[] = [];
