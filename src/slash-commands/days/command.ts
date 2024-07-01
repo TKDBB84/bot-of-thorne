@@ -4,7 +4,7 @@ import commandRegistrationData from './registration-data.js';
 import dayjs from 'dayjs';
 import dataSource from '../../data-source.js';
 import { Character, User } from '../../entities/index.js';
-import { CoTAPIId, GuildIds } from '../../consts.js';
+import { CoTAPIId } from '../../consts.js';
 import { Like } from 'typeorm';
 import { getNodestoneCharacter, getNodestoneFreecompany } from '../../lib/nodestone/index.js';
 import logger from '../../logger.js';

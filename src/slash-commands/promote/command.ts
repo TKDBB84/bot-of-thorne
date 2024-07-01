@@ -2,7 +2,7 @@ import type { ChatInputCommandInteraction } from 'discord.js';
 import type { SlashCommandCallback } from '../types.js';
 import registrationData from './registration-data.js';
 import autocomplete from './autocomplete.js';
-import { CoTAPIId, GuildIds } from '../../consts.js';
+import { CoTAPIId } from '../../consts.js';
 import { Character, User } from '../../entities/index.js';
 import { Like } from 'typeorm';
 import { getNodestoneCharacter, getNodestoneFreecompany } from '../../lib/nodestone/index.js';
