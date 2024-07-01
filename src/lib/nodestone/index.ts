@@ -1,6 +1,6 @@
-import getLodestoneCotMembers from './get-lodestone-cot-members.js';
-import getLodestoneFreecompany from './get-lodestone-freecompany.js';
-import getLodestoneCharacter from './get-lodestone-character.js';
+import getNodestoneCotMembers from './get-nodestone-cot-members.js';
+import getNodestoneFreecompany from './get-nodestone-freecompany.js';
+import getNodestoneCharacter from './get-nodestone-character.js';
 
-export { getLodestoneCharacter, getLodestoneCotMembers, getLodestoneFreecompany };
+export { getNodestoneCharacter, getNodestoneCotMembers, getNodestoneFreecompany };
 export * from './types.js';

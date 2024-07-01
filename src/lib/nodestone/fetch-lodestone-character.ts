@@ -7,7 +7,7 @@ import type {
   XIVCharacterSearchResponse,
 } from './types.js';
 import nodeStoneRequest from './request.js';
-import getLodestoneCharacter from './get-lodestone-character.js';
+import getNodestoneCharacter from './get-nodestone-character.js';
 
 async function fetchCharacterListPages(
   name: string,
@@ -37,7 +37,7 @@ async function fetchLodestoneCharacter({ apiId = '', name = '', exactMatch = tru
     const nameExactMatch = charList.filter(
       (matchingChar) => !exactMatch || matchingChar.Name.toLowerCase().trim() === name.toLowerCase().trim(),
     );
-    return Promise.all(nameExactMatch.map(({ ID: _apiId }) => getLodestoneCharacter({ apiId: _apiId.toString() })));
+    return Promise.all(nameExactMatch.map(({ ID: _apiId }) => getNodestoneCharacter({ apiId: _apiId.toString() })));
   }
   throw new Error('How Did You Get Here?');
 }

@@ -3,7 +3,7 @@ import nodeStoneRequest from './request.js';
 import { CoTAPIId } from '../../consts.js';
 import { setTimeout } from 'node:timers/promises';
 
-const fetchLodestoneCotMembers = async (
+const fetchNodestoneCotMembers = async (
   page = 1,
   members: XIVFreeCompanyMemberListEntry[] = [],
 ): Promise<XIVFreeCompanyMemberListEntry[]> => {
@@ -17,7 +17,7 @@ const fetchLodestoneCotMembers = async (
   });
 
   await setTimeout(150);
-  return fetchLodestoneCotMembers(FreeCompanyMembers.Pagination.PageNext, members.concat(FreeCompanyMembers.List));
+  return fetchNodestoneCotMembers(FreeCompanyMembers.Pagination.PageNext, members.concat(FreeCompanyMembers.List));
 };
 
-export default fetchLodestoneCotMembers;
+export default fetchNodestoneCotMembers;

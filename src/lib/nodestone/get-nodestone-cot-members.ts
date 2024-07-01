@@ -1,9 +1,9 @@
 import type { XIVFreeCompanyMemberListEntry } from './types.js';
 import { ONE_HOUR_IN_SECONDS } from '../../consts.js';
 import redisClient from '../../redisClient.js';
-import fetchLodestoneCotMembers from './fetch-lodestone-cot-members.js';
+import fetchNodestoneCotMembers from './fetch-nodestone-cot-members.js';
 
-const getLodestoneCotMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMemberListEntry[]> = async (
+const getNodestoneCotMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMemberListEntry[]> = async (
   forcePull = false,
 ) => {
   const redisMemberListKey = 'Nodestone:COT:MemberList';
@@ -17,11 +17,11 @@ const getLodestoneCotMembers: (forcePull?: boolean) => Promise<XIVFreeCompanyMem
       /* do nothing, just pull a fresh list */
     }
   }
-  const freshMemberList = await fetchLodestoneCotMembers();
+  const freshMemberList = await fetchNodestoneCotMembers();
   if (freshMemberList.length) {
     void redisClient.set(redisMemberListKey, JSON.stringify(freshMemberList), 'EX', ONE_HOUR_IN_SECONDS * 6);
   }
   return freshMemberList;
 };
 
-export default getLodestoneCotMembers;
+export default getNodestoneCotMembers;

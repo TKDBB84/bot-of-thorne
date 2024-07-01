@@ -3,10 +3,10 @@ import redisClient from '../../redisClient.js';
 import { ONE_HOUR_IN_SECONDS } from '../../consts.js';
 import fetchLodestoneCharacter from './fetch-lodestone-character.js';
 
-function getLodestoneCharacter({ apiId }: SearchByIdParam): Promise<XIVCharacter>;
-function getLodestoneCharacter({ name, exactMatch }: SearchByNameParam): Promise<XIVCharacter[]>;
+function getNodestoneCharacter({ apiId }: SearchByIdParam): Promise<XIVCharacter>;
+function getNodestoneCharacter({ name, exactMatch }: SearchByNameParam): Promise<XIVCharacter[]>;
 
-async function getLodestoneCharacter({ apiId = '', name = '', exactMatch = true }) {
+async function getNodestoneCharacter({ apiId = '', name = '', exactMatch = true }) {
   if (apiId) {
     const lodestoneCharacterCacheKey = `Nodestone:CharacterData:${apiId}`;
     try {
@@ -42,4 +42,4 @@ async function getLodestoneCharacter({ apiId = '', name = '', exactMatch = true 
   throw new Error('Not Sure How You Got Here');
 }
 
-export default getLodestoneCharacter;
+export default getNodestoneCharacter;

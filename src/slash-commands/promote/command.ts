@@ -5,19 +5,17 @@ import autocomplete from './autocomplete.js';
 import { CoTAPIId, GuildIds } from '../../consts.js';
 import { Character, User } from '../../entities/index.js';
 import { Like } from 'typeorm';
-import { getLodestoneCharacter, getLodestoneFreecompany } from '../../lib/nodestone/index.js';
+import { getNodestoneCharacter, getNodestoneFreecompany } from '../../lib/nodestone/index.js';
 import logger from '../../logger.js';
 import dataSource from '../../data-source.js';
+import isSupportedGuildInteraction from '../../lib/is-support-guild-interaction.js';
 const characterRepo = dataSource.getRepository(Character);
 
 const command: SlashCommandCallback = {
   command: registrationData.registrationData.name,
   autocomplete,
   async exec(interaction: ChatInputCommandInteraction): Promise<void> {
-    if (
-      !interaction.inGuild() ||
-      (interaction.guildId !== GuildIds.COT_GUILD_ID && interaction.guildId !== GuildIds.SASNERS_TEST_SERVER_GUILD_ID)
-    ) {
+    if (!isSupportedGuildInteraction(interaction)) {
       return;
     }
 
@@ -35,7 +33,7 @@ const command: SlashCommandCallback = {
     }
     if (!character) {
       await interaction.deferReply();
-      const characterList = await getLodestoneCharacter({ name: characterId.toString() });
+      const characterList = await getNodestoneCharacter({ name: characterId.toString() });
       if (characterList.length === 0) {
         await interaction.editReply({
           content: `Sorry I have no record of ${characterId.toString()} in the FC nor on Jenova in the Lodestone`,
@@ -79,7 +77,7 @@ const command: SlashCommandCallback = {
       if (!interaction.deferred) {
         await interaction.deferReply();
       }
-      const fcData = await getLodestoneFreecompany(character.free_company_id);
+      const fcData = await getNodestoneFreecompany(character.free_company_id);
       await characterRepo.update(character.id, { free_company_name: fcData.Name });
       character.free_company_name = fcData.Name;
     }
