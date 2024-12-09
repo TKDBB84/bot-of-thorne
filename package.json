@@ -32,7 +32,7 @@
     "@types/node": "^22.10.1",
     "@typescript-eslint/types": "^8.18.0",
     "babel-jest": "^29.7.0",
-    "discord-api-types": "^0.37.110",
+    "discord-api-types": "^0.37.111",
     "eslint": "^9.16.0",
     "globals": "^15.13.0",
     "jest": "^29.7.0",
