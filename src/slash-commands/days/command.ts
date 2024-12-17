@@ -54,37 +54,31 @@ const command: SlashCommandCallback = {
           content: `Sorry I cant find a record of ${characterId.toString()} in the FC nor on Jenova in the Lodestone`,
         });
         return;
-      } else if (characterList.length === 1) {
-        const foundChar = characterList[0];
-        if (foundChar) {
-          const isCot = foundChar.FreeCompany?.ID === CoTAPIId;
-          character = await characterRepo.save(
-            characterRepo.create({
-              apiId: foundChar.ID.toString(),
-              name: foundChar.Name,
-              avatar: foundChar.Avatar,
-              portrait: foundChar.Portrait,
-              free_company_id: foundChar.FreeCompany?.ID || null,
-              free_company_name: isCot ? 'Crowne of Thorne' : null,
-              first_seen_in_fc: isCot ? new Date() : null,
-              last_seen_in_fc: isCot ? new Date() : null,
-              last_promotion: null,
-            }),
-          );
-          if (isCot) {
-            await interaction.editReply(
-              `This is My First Time Seeing ${foundChar.Name} as a member of Crowne of Thorne, so today is ${foundChar.Name}'s 1st Day`,
-            );
-            return;
-          }
-        } else {
-          logger.error('Found but not found?', { characterList, foundChar, characterId });
-          throw new Error('Found but not found?');
-        }
-      } else {
+      }
+
+      if (characterList.length > 1) {
         await interaction.editReply('Multiple Characters Match This Name On Jenova... somehow');
         return;
       }
+
+      const foundChar = characterList[0];
+      if (!foundChar) {
+        logger.error('Found but not found?', { characterList, foundChar, characterId });
+        throw new Error('Found but not found?');
+      }
+      const isCot = foundChar.FreeCompany?.ID === CoTAPIId;
+      if (!isCot) {
+        await interaction.editReply({
+          content: `Sorry I cant find a record of ${characterId.toString()} in the FC.`,
+        });
+        return
+      }
+
+      void Character.createFromNodestoneData(foundChar)
+      await interaction.editReply(
+        `This is My First Time Seeing ${foundChar.Name} as a member of Crowne of Thorne, so today is ${foundChar.Name}'s 1st Day`,
+      );
+      return;
     }
 
     if (character.free_company_id && !character.free_company_name) {
