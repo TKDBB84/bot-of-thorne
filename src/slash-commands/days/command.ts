@@ -45,7 +45,7 @@ const command: SlashCommandCallback = {
       charParams = { name: Like(characterId.toString()) };
     }
 
-    let character = await characterRepo.findOneBy(charParams);
+    const character = await characterRepo.findOneBy(charParams);
     if (!character) {
       await interaction.deferReply();
       const characterList = await getNodestoneCharacter({ name: characterId.toString() });
