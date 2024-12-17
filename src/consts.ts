@@ -39,6 +39,11 @@ export const enum UserIds {
   TYR = '168183160708923392',
 }
 
+export const AlwaysOfficers: string[] = [
+  UserIds.CAIT,
+  UserIds.SASNER,
+]
+
 export enum CotRanks {
   DIGNITARY = '331193662748885013',
   GUEST = '377254599041613836',
