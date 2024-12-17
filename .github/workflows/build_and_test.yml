@@ -63,7 +63,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.x]
 
     steps:
     - uses: actions/checkout@v2
@@ -86,7 +86,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 18.x ]
+        node-version: [ 22.x ]
 
     steps:
       - uses: actions/checkout@v2
@@ -120,7 +120,7 @@ jobs:
 #
 #    strategy:
 #      matrix:
-#        node-version: [ 18.x ]
+#        node-version: [ 22.x ]
 #
 #    steps:
 #      - name: Pulling and building on server
