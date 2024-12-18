@@ -1,8 +1,8 @@
 import { CotRanks, GuildIds, AlwaysOfficers } from '../consts.js';
-import { type ChatInputCommandInteraction, Role } from 'discord.js';
+import { type AutocompleteInteraction, type ChatInputCommandInteraction } from 'discord.js';
 
 
-const isInteractionFromOfficer = async (interaction: ChatInputCommandInteraction): Promise<boolean> => {
+const isInteractionFromOfficer = async (interaction: ChatInputCommandInteraction | AutocompleteInteraction): Promise<boolean> => {
   const { guildId, member, user: {id: userId} } = interaction
 
   if (AlwaysOfficers.includes(userId.toString())) {
