@@ -21,7 +21,7 @@
   "description": "Crowne of Thorne Management Bot",
   "main": "index.js",
   "devDependencies": {
-    "@babel/core": "^7.26.8",
+    "@babel/core": "^7.26.9",
     "@babel/eslint-parser": "^7.26.8",
     "@babel/plugin-syntax-import-assertions": "^7.25.9",
     "@babel/preset-env": "^7.26.8",
