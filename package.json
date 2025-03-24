@@ -29,7 +29,7 @@
     "@eslint/js": "^9.23.0",
     "@tsconfig/node22": "^22.0.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.13.11",
+    "@types/node": "^22.13.13",
     "@typescript-eslint/types": "^8.28.0",
     "babel-jest": "^29.7.0",
     "discord-api-types": "^0.37.119",
